@@ -1,64 +1,346 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Master Purpose</h2>
-    </x-slot>
 
-    <div class="p-6 bg-white rounded shadow">
-        @if (session('success'))
-            <div class="mb-4 text-green-600 font-semibold">{{ session('success') }}</div>
-        @endif
+    <div class="w-full px-3 sm:px-4 lg:px-5 py-4 sm:py-5">
 
-        <a href="{{ route('admin.purpose.create') }}"
-            class="inline-block mb-4 bg-green-400 hover:bg-green-500 text-white px-3 py-1 rounded font-semibold text-sm">
-            Tambah Tujuan
-        </a>
+        <div class="w-full border border-gray-400 bg-white rounded-sm">
 
-        <table class="w-full border border-gray-300 rounded text-sm">
-            <thead>
-                <tr class="bg-gray-400 text-white text-left">
-                    <th class="border border-gray-300 px-4 py-2 w-12">No</th>
-                    <th class="border border-gray-300 px-4 py-2">Nama Tujuan</th>
-                    <th class="border border-gray-300 px-4 py-2 w-40">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($purposes as $key => $item)
-                    <tr class="{{ $key % 2 == 0 ? 'bg-gray-300' : 'bg-white' }}">
-                        <td class="border border-gray-300 px-4 py-2 text-center">{{ $purposes->firstItem() + $key }}
-                        </td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $item->purpose_type }}</td>
-                        <td class="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
-                            <a href="{{ route('admin.purpose.edit', $item->id) }}"
-                                class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs font-semibold">
-                                Ubah
-                            </a>
-                            <form action="{{ route('admin.purpose.destroy', $item->id) }}" method="POST"
-                                onsubmit="return confirm('Yakin hapus tujuan ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold">
-                                    Hapus
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-center py-4">Data kosong</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            {{-- Header --}}
+            <div class="min-h-[64px]
+                        flex items-center justify-center
+                        px-4 sm:px-6
+                        py-3
+                        bg-gray-100
+                        border-b border-gray-300">
 
-        <div class="mt-3 text-sm text-gray-600">
-            Showing {{ $purposes->firstItem() ?? 0 }} to {{ $purposes->lastItem() ?? 0 }} of
-            {{ $purposes->total() ?? 0 }}
-            entries
+                <h2 class="text-[20px] sm:text-[24px]
+                           leading-6
+                           font-normal
+                           text-gray-600
+                           text-center
+                           break-words">
+                    Data Purpose
+                </h2>
+
+            </div>
+
+            {{-- Body --}}
+            <div class="px-3 sm:px-5 lg:px-7 py-4 sm:py-5">
+
+                {{-- Success Alert --}}
+                @if (session('success'))
+                    <div class="mb-4
+                                px-4 py-3
+                                bg-green-100
+                                border border-green-300
+                                text-green-700
+                                text-[14px]
+                                rounded-sm">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                {{-- Toolbar --}}
+                <div class="flex flex-col lg:flex-row
+                            lg:items-center
+                            lg:justify-between
+                            gap-4
+                            mb-4">
+
+                    <a href="{{ route('admin.purpose.create') }}"
+                        class="w-full sm:w-auto
+                               self-start
+                               text-center
+                               bg-green-500
+                               hover:bg-green-600
+                               text-white
+                               text-[14px]
+                               px-4 py-2
+                               rounded-sm">
+                        Tambah Tujuan
+                    </a>
+
+                    <div class="flex flex-col sm:flex-row
+                                sm:items-center
+                                gap-2">
+
+                        <label for="search"
+                            class="text-[15px] sm:text-[16px]
+                                   text-gray-600
+                                   whitespace-nowrap">
+                            Pencarian :
+                        </label>
+
+                        <input type="text"
+                            id="search"
+                            name="search"
+                            placeholder="Cari tujuan..."
+                            class="w-full sm:w-[180px]
+                                   h-[36px]
+                                   border border-gray-500
+                                   rounded-sm
+                                   px-3
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-600
+                                   focus:outline-none
+                                   focus:border-gray-700">
+
+                    </div>
+
+                </div>
+
+                {{-- Table --}}
+                <div class="w-full overflow-x-auto">
+
+                    <table class="w-full min-w-[600px]
+                                  border-collapse
+                                  text-[16px]">
+
+                        <thead>
+                            <tr class="bg-slate-600 text-white">
+
+                                <th class="w-[70px]
+                                           h-[45px]
+                                           border border-gray-300
+                                           px-3 sm:px-4
+                                           text-center
+                                           align-middle">
+                                    No
+                                </th>
+
+                                <th class="h-[45px]
+                                           border border-gray-300
+                                           px-3 sm:px-4
+                                           text-center
+                                           align-middle">
+                                    Nama Tujuan
+                                </th>
+
+                                <th class="w-[110px]
+                                           h-[45px]
+                                           border border-gray-300
+                                           px-3 sm:px-4
+                                           text-center
+                                           align-middle">
+                                    Aksi
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @forelse ($purposes as $key => $item)
+
+                                <tr class="{{ $key % 2 == 0 ? 'bg-gray-300' : 'bg-white' }}
+                                           hover:bg-gray-200">
+
+                                    <td class="h-[70px]
+                                               border border-gray-300
+                                               px-3 sm:px-4
+                                               text-center
+                                               align-middle
+                                               break-words">
+                                        {{ $purposes->firstItem() + $key }}
+                                    </td>
+
+                                    <td class="h-[70px]
+                                               border border-gray-300
+                                               px-3 sm:px-4
+                                               text-center
+                                               align-middle
+                                               break-words">
+                                        {{ $item->purpose_type }}
+                                    </td>
+
+                                    <td class="h-[70px]
+                                               border border-gray-300
+                                               px-2 sm:px-3
+                                               align-middle">
+
+                                        <div class="flex flex-col
+                                                    items-center
+                                                    justify-center
+                                                    gap-1">
+
+                                            <a href="{{ route('admin.purpose.edit', $item->id) }}"
+                                                class="w-[52px]
+                                                       text-center
+                                                       bg-yellow-400
+                                                       hover:bg-yellow-500
+                                                       text-white
+                                                       text-[14px]
+                                                       py-1
+                                                       rounded-sm">
+                                                Ubah
+                                            </a>
+
+                                            <form action="{{ route('admin.purpose.destroy', $item->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Yakin hapus tujuan ini?');">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit"
+                                                    class="w-[52px]
+                                                           bg-red-500
+                                                           hover:bg-red-600
+                                                           text-white
+                                                           text-[14px]
+                                                           py-1
+                                                           rounded-sm">
+                                                    Hapus
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+                                    <td colspan="3"
+                                        class="border border-gray-300
+                                               px-4 py-6
+                                               text-center
+                                               text-gray-500">
+                                        Data tujuan tidak ditemukan
+                                    </td>
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {{-- Footer --}}
+                <div class="flex flex-col sm:flex-row
+                            sm:items-center
+                            sm:justify-between
+                            gap-3
+                            mt-4">
+
+                    <div class="text-[14px] text-gray-600">
+
+                        @if ($purposes->total() > 0)
+
+                            Menampilkan
+                            {{ $purposes->firstItem() }}
+                            sampai
+                            {{ $purposes->lastItem() }}
+                            dari
+                            {{ $purposes->total() }}
+                            data
+
+                        @else
+
+                            Menampilkan 0 data
+
+                        @endif
+
+                    </div>
+
+                    @if ($purposes->hasPages())
+
+                        <div class="flex items-center gap-1">
+
+                            @if ($purposes->onFirstPage())
+
+                                <span class="px-2 py-1
+                                             text-[14px]
+                                             text-gray-400
+                                             border border-gray-300
+                                             rounded-sm">
+                                    Sebelumnya
+                                </span>
+
+                            @else
+
+                                <a href="{{ $purposes->previousPageUrl() }}"
+                                    class="px-2 py-1
+                                           text-[14px]
+                                           text-gray-600
+                                           border border-gray-400
+                                           rounded-sm
+                                           hover:bg-gray-200">
+                                    Sebelumnya
+                                </a>
+
+                            @endif
+
+                            @for ($page = 1; $page <= $purposes->lastPage(); $page++)
+
+                                @if ($page == $purposes->currentPage())
+
+                                    <span class="min-w-[30px]
+                                                 text-center
+                                                 px-2 py-1
+                                                 text-[14px]
+                                                 bg-gray-300
+                                                 border border-gray-400
+                                                 rounded-sm">
+                                        {{ $page }}
+                                    </span>
+
+                                @else
+
+                                    <a href="{{ $purposes->url($page) }}"
+                                        class="min-w-[30px]
+                                               text-center
+                                               px-2 py-1
+                                               text-[14px]
+                                               text-gray-600
+                                               border border-gray-400
+                                               rounded-sm
+                                               hover:bg-gray-200">
+                                        {{ $page }}
+                                    </a>
+
+                                @endif
+
+                            @endfor
+
+                            @if ($purposes->hasMorePages())
+
+                                <a href="{{ $purposes->nextPageUrl() }}"
+                                    class="px-2 py-1
+                                           text-[14px]
+                                           text-gray-600
+                                           border border-gray-400
+                                           rounded-sm
+                                           hover:bg-gray-200">
+                                    Berikutnya
+                                </a>
+
+                            @else
+
+                                <span class="px-2 py-1
+                                             text-[14px]
+                                             text-gray-400
+                                             border border-gray-300
+                                             rounded-sm">
+                                    Berikutnya
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    @endif
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="mt-2">
-            {{ $purposes->links() }}
-        </div>
     </div>
+
 </x-app-layout>

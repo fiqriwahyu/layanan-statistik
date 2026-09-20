@@ -1,34 +1,121 @@
 <x-app-layout>
-    <div class="bg-gray-200 p-3 rounded mb-4 font-semibold text-gray-700 text-center">
-        Edit categorie
-    </div>
 
-    <div class="max-w-md mx-auto bg-white p-6 rounded shadow">
-        <form action="{{ route('admin.categorie.update', $kategori) }}" method="POST" class="space-y-4">
-            @csrf
-            @method('PUT')
+    <div class="w-full px-3 sm:px-4 lg:px-5 py-4 sm:py-5">
 
-            <div>
-                <label for="categorie_type" class="block mb-1 font-semibold">Nama Kategori</label>
-                <input type="text" id="categorie_type" name="categorie_type"
-                    value="{{ old('categorie_type', $kategori->categorie_type) }}" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-yellow-300"
-                    placeholder="Masukkan nama kategori">
-                @error('categorie_type')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
+        <div class="w-full max-w-[420px] mx-auto
+                    border border-gray-400
+                    bg-white
+                    rounded-sm">
+
+            <div class="min-h-[64px]
+                        flex items-center
+                        px-4 sm:px-7
+                        py-3
+                        bg-gray-100
+                        border-b border-gray-300">
+
+                <h2 class="text-[20px] sm:text-[24px]
+                           leading-6
+                           font-normal
+                           text-gray-600
+                           break-words">
+                    Form Ubah Categorie
+                </h2>
+
             </div>
 
-            <div class="flex justify-between">
-                <a href="{{ route('admin.categorie.index') }}"
-                    class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded font-semibold">
-                    Kembali
-                </a>
-                <button type="submit"
-                    class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded font-semibold">
-                    Update
-                </button>
+            <div class="px-4 sm:px-7 py-5">
+
+                @if ($errors->any())
+
+                    <div class="mb-4
+                                text-[14px]
+                                text-red-600
+                                break-words">
+
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">
+                                {{ $error }}
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                @endif
+
+                <form action="{{ route('admin.categorie.update', $kategori) }}"
+                    method="POST">
+
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-4">
+
+                        <label for="categorie_type"
+                            class="block mb-2
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700">
+
+                            Nama Kategori
+
+                        </label>
+
+                        <input type="text"
+                            id="categorie_type"
+                            name="categorie_type"
+                            value="{{ old('categorie_type', $kategori->categorie_type) }}"
+                            required
+                            autofocus
+                            placeholder="Masukkan nama kategori"
+                            class="w-full h-[40px]
+                                   border border-gray-500
+                                   rounded-sm
+                                   px-3
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700
+                                   placeholder-gray-400
+                                   focus:outline-none
+                                   focus:border-gray-700">
+
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2 w-full">
+
+                        <a href="{{ route('admin.categorie.index') }}"
+                            class="w-full sm:w-auto
+                                   text-center
+                                   px-4 py-2
+                                   bg-blue-600
+                                   hover:bg-blue-700
+                                   text-white
+                                   text-[14px]
+                                   rounded-sm">
+
+                            Kembali
+
+                        </a>
+
+                        <button type="submit"
+                            class="w-full sm:w-auto
+                                   px-4 py-2
+                                   bg-green-500
+                                   hover:bg-green-600
+                                   text-white
+                                   text-[14px]
+                                   rounded-sm">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
-        </form>
+
+        </div>
+
     </div>
+
 </x-app-layout>

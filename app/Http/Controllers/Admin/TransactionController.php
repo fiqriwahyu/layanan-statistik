@@ -10,12 +10,17 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Transaction::with(['customer', 'feedback']);
+        $query = Transaction::with([
+            'customer',
+            'feedback',
+        ]);
 
         if ($request->filled('search')) {
-            $query->whereHas('customer', function ($sub) use ($request) {
-                $sub->where('nama_lengkap', 'like', '%' . $request->search . '%')
-                    ->orWhere('no_hp', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+
+            $query->whereHas('customer', function ($sub) use ($search) {
+                $sub->where('nama_lengkap', 'like', '%' . $search . '%')
+                    ->orWhere('no_hp', 'like', '%' . $search . '%');
             });
         }
 
@@ -27,33 +32,54 @@ class TransactionController extends Controller
             $query->whereDate('created_at', '<=', $request->to);
         }
 
-        $transactions = $query->orderBy('created_at', 'desc')->paginate(15);
+        $transactions = $query
+            ->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.transaction.index', compact('transactions'));
     }
 
     public function updateStatus(Request $request, Transaction $transaksi)
     {
-        $data = $request->validate([
-            'status_transaksi' => 'required|string|in:Belum dilayani,Sudah dilayani',
+        $request->validate([
+            'status_transaksi' => [
+                'required',
+                'string',
+                'in:Belum dilayani,Sudah dilayani',
+            ],
         ]);
 
-        $transaksi->update(['status_transaksi' => $data['status_transaksi']]);
+        $transaksi->status_transaksi = $request->status_transaksi;
+        $transaksi->save();
 
-        return redirect()->route('admin.transaction.index')->with('success', 'Status transaksi diperbarui.');
+        return redirect()
+            ->route('admin.transaction.index')
+            ->with('success', 'Status transaksi berhasil diperbarui.');
     }
 
     public function show(Transaction $transaksi)
     {
-        $transaksi->load(['customer', 'media', 'service', 'purpose', 'subCategorie', 'feedback']);
+        $transaksi->load([
+            'customer',
+            'media',
+            'service',
+            'purpose',
+            'subCategorie',
+            'feedback',
+        ]);
 
-        return view('admin.transaction.show', ['transaction' => $transaksi]);
+        return view('admin.transaction.show', [
+            'transaction' => $transaksi,
+        ]);
     }
 
-    public function destroy(Transaction $transaksi)
-    {
-        $transaksi->delete();
+    // public function destroy(Transaction $transaksi)
+    // {
+    //     $transaksi->delete();
 
-        return redirect()->route('admin.transaction.index')->with('success', 'Transaksi berhasil dihapus.');
-    }
+    //     return redirect()
+    //         ->route('admin.transaction.index')
+    //         ->with('success', 'Transaksi berhasil dihapus.');
+    // }
 }

@@ -244,13 +244,13 @@ Route::prefix('admin')
         Route::post('/work', [WorkController::class, 'store'])
             ->name('work.store');
 
-        Route::get('/work/{id}/edit', [WorkController::class, 'edit'])
+        Route::get('/work/{work}/edit', [WorkController::class, 'edit'])
             ->name('work.edit');
 
-        Route::put('/work/{id}', [WorkController::class, 'update'])
+        Route::put('/work/{work}', [WorkController::class, 'update'])
             ->name('work.update');
 
-        Route::delete('/work/{id}', [WorkController::class, 'destroy'])
+        Route::delete('/work/{work}', [WorkController::class, 'destroy'])
             ->name('work.destroy');
 
 
@@ -361,19 +361,16 @@ Route::prefix('admin')
         */
 
         Route::get('/customer/export-pdf', [CustomerController::class, 'exportPDF'])
-            ->name('customer.export.pdf');
+    ->name('customer.export.pdf');
 
-        Route::get('/customer/export/{format?}', [CustomerController::class, 'exportExcel'])
-            ->name('customer.export.excel');
+Route::get('/customer/export/{format?}', [CustomerController::class, 'exportExcel'])
+    ->name('customer.export.excel');
 
-        Route::get('/customer', [CustomerController::class, 'index'])
-            ->name('customer.index');
+Route::get('/customer', [CustomerController::class, 'index'])
+    ->name('customer.index');
 
-        Route::get('/customer/{customer}', [CustomerController::class, 'show'])
-            ->name('customer.show');
-
-        Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])
-            ->name('customer.destroy');
+Route::get('/customer/{customer}', [CustomerController::class, 'show'])
+    ->name('customer.show');
 
 
         /*
@@ -407,17 +404,17 @@ Route::prefix('admin')
         |--------------------------------------------------------------------------
         */
 
-        Route::get('/transaction', [TransactionController::class, 'index'])
-            ->name('transaction.index');
+Route::get('/transaction', [TransactionController::class, 'index'])
+    ->name('transaction.index');
 
-        Route::get('/transaction/{transaksi}', [TransactionController::class, 'show'])
-            ->name('transaction.show');
+Route::get('/transaction/{transaksi}', [TransactionController::class, 'show'])
+    ->name('transaction.show');
 
-        Route::put('/transaction/{id}/update-status', [TransactionController::class, 'updateStatus'])
-            ->name('transaction.updateStatus');
+Route::put('/transaction/{transaksi}/update-status', [TransactionController::class, 'updateStatus'])
+    ->name('transaction.updateStatus');
 
-        Route::delete('/transaction/{transaksi}', [TransactionController::class, 'destroy'])
-            ->name('transaction.destroy');
+// Route::delete('/transaction/{transaksi}', [TransactionController::class, 'destroy'])
+//     ->name('transaction.destroy');
     });
 
 

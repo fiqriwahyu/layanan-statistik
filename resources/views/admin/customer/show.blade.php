@@ -1,115 +1,424 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl">Detail Customer</h2>
-    </x-slot>
 
-    <div class="bg-white rounded shadow p-6 space-y-6">
+    <div class="customer-detail">
 
-        {{-- DATA DIRI --}}
-        <div>
-            <h3 class="font-semibold text-lg mb-2 border-b pb-1">Data Diri</h3>
+        <div class="customer-card">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-sm text-gray-500">Nama Lengkap</label>
-                    <div class="font-medium">{{ $customer->nama_lengkap }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">No HP</label>
-                    <div class="font-medium">{{ $customer->no_hp }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">Jenis Kelamin</label>
-                    <div class="font-medium">{{ $customer->jenis_kelamin }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">Usia</label>
-                    <div class="font-medium">{{ $customer->usia }} Tahun</div>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-sm text-gray-500">Alamat</label>
-                    <div class="font-medium">{{ $customer->alamat }}</div>
-                </div>
+            {{-- HEADER --}}
+            <div class="customer-header">
+                <h2>Pengunjung</h2>
             </div>
-        </div>
 
-        {{-- PEKERJAAN --}}
-        <div>
-            <h3 class="font-semibold text-lg mb-2 border-b pb-1">Pekerjaan & Pendidikan</h3>
+            {{-- BODY --}}
+            <div class="customer-body">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-sm text-gray-500">Instansi</label>
-                    <div class="font-medium">{{ $customer->nama_instansi ?? '-' }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">NIP / NIM</label>
-                    <div class="font-medium">{{ $customer->nip_nim ?? '-' }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">Pekerjaan</label>
-                    <div class="font-medium">{{ $customer->work->work_type ?? '-' }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">Pendidikan</label>
-                    <div class="font-medium">{{ $customer->education->education_type ?? '-' }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <h3 class="font-semibold text-lg mb-2 border-b pb-1">Layanan</h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-sm text-gray-500">Media Pelayanan</label>
-                    <div class="font-medium">{{ $customer->transactions->first()->media?->media_type ?? '-' }}</div>
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-500">Jenis Pelayanan</label>
-                    <div class="font-medium">{{ $customer->transactions->first()->service?->service_type ?? '-' }}</div>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-sm text-gray-500">Tujuan</label>
-                    <div class="font-medium">{{ $customer->transactions->first()->purpose?->purpose_type ?? '-' }}</div>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-sm text-gray-500">Kebutuhan Data</label>
-                    <div class="font-medium">{{ $customer->transactions->first()->subCategorie?->sub_categorie_type ?? '-' }}</div>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-sm text-gray-500">Data yang Diminta</label>
-                    <div class="font-medium whitespace-pre-line">
-                        {{ $customer->transactions->first()->data_diminta ?? '-' }}
+                <div class="customer-row">
+                    <div class="customer-label">Nama Tamu</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->nama_lengkap ?? '-' }}
                     </div>
                 </div>
-            </div>
-        </div>
 
-        {{-- FOOTER --}}
-        <div class="flex justify-between items-center border-t pt-4">
-            <div class="text-sm text-gray-500">
-                Tanggal Kunjungan:
-                <span class="font-medium">
-                    {{ $customer->created_at->format('d-m-Y H:i') }}
-                </span>
+                <div class="customer-row">
+                    <div class="customer-label">Telepon</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->no_hp ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Jenis Kelamin</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->jenis_kelamin ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Email</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->email ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Alamat</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->alamat ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Usia</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->usia ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Pendidikan</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->education->education_type ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Pekerjaan</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->work->work_type ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">NIP/NIM</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->nip_nim ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Nama Instansi</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->nama_instansi ?? '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row">
+                    <div class="customer-label">Dibuat Tanggal</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->created_at
+                            ? $customer->created_at->format('d-m-Y H:i')
+                            : '-' }}
+                    </div>
+                </div>
+
+                <div class="customer-row last">
+                    <div class="customer-label">Diperbarui Tanggal</div>
+                    <div class="customer-colon">:</div>
+                    <div class="customer-value">
+                        {{ $customer->updated_at
+                            ? $customer->updated_at->format('d-m-Y H:i')
+                            : '-' }}
+                    </div>
+                </div>
+
+                {{-- FOOTER --}}
+                <div class="customer-footer">
+
+                    <a href="{{ route('admin.customer.index') }}">
+                        Kembali
+                    </a>
+
+                </div>
+
             </div>
 
-            <a href="{{ route('admin.customer.index') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-                Kembali
-            </a>
         </div>
 
     </div>
+
+
+    <style>
+
+        /* =========================================
+           DESKTOP
+        ========================================= */
+
+        .customer-detail {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .customer-card {
+            width: 100%;
+            max-width: 100%;
+            border: 1px solid #9ca3af;
+            background: #fff;
+            border-radius: 2px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .customer-header {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 12px 30px;
+            background: #f3f3f3;
+            border-bottom: 1px solid #d1d1d1;
+            box-sizing: border-box;
+        }
+
+        .customer-header h2 {
+            margin: 0;
+            font-size: 24px;
+            line-height: 28px;
+            font-weight: 400;
+            color: #5f6368;
+        }
+
+        .customer-body {
+            width: 100%;
+            padding: 0 30px 18px;
+            box-sizing: border-box;
+        }
+
+        .customer-row {
+            display: grid;
+            grid-template-columns: 38% 28px minmax(0, 1fr);
+            align-items: center;
+            min-height: 43px;
+            border-bottom: 1px solid #9ca3af;
+            color: #5f6368;
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 400;
+            box-sizing: border-box;
+        }
+
+        .customer-label {
+            min-width: 0;
+            padding-right: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .customer-colon {
+            text-align: center;
+            width: 28px;
+        }
+
+        .customer-value {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .customer-row.last {
+            border-bottom: none;
+        }
+
+        .customer-footer {
+            padding-top: 18px;
+        }
+
+        .customer-footer a {
+            display: inline-block;
+            padding: 7px 13px;
+            background: #b9d9f7;
+            color: #416789;
+            font-size: 14px;
+            line-height: 18px;
+            border-radius: 2px;
+            text-decoration: none;
+        }
+
+        .customer-footer a:hover {
+            background: #a9cef0;
+        }
+
+
+        /* =========================================
+           TABLET
+        ========================================= */
+
+        @media (max-width: 900px) {
+
+            .customer-detail {
+                padding: 16px;
+            }
+
+            .customer-header {
+                padding: 12px 24px;
+            }
+
+            .customer-body {
+                padding: 0 24px 16px;
+            }
+
+            .customer-row {
+                grid-template-columns:
+                    minmax(180px, 35%)
+                    24px
+                    minmax(0, 1fr);
+                min-height: 42px;
+            }
+
+            .customer-colon {
+                width: 24px;
+            }
+
+        }
+
+
+        /* =========================================
+           HP
+        ========================================= */
+
+        @media (max-width: 640px) {
+
+            .customer-detail {
+                padding: 10px;
+            }
+
+            .customer-card {
+                width: 100%;
+            }
+
+            .customer-header {
+                min-height: 58px;
+                padding: 10px 16px;
+            }
+
+            .customer-header h2 {
+                font-size: 22px;
+                line-height: 26px;
+            }
+
+            .customer-body {
+                padding: 0 16px 14px;
+            }
+
+            .customer-row {
+                grid-template-columns:
+                    minmax(110px, 36%)
+                    20px
+                    minmax(0, 1fr);
+
+                min-height: 42px;
+
+                font-size: 15px;
+                line-height: 19px;
+            }
+
+            .customer-label {
+                padding-right: 5px;
+            }
+
+            .customer-colon {
+                width: 20px;
+            }
+
+            .customer-value {
+                padding-left: 2px;
+            }
+
+            .customer-footer {
+                padding-top: 15px;
+            }
+
+            .customer-footer a {
+                padding: 7px 13px;
+                font-size: 14px;
+            }
+
+        }
+
+
+        /* =========================================
+           HP KECIL
+        ========================================= */
+
+        @media (max-width: 400px) {
+
+            .customer-detail {
+                padding: 8px;
+            }
+
+            .customer-header {
+                padding: 10px 14px;
+            }
+
+            .customer-header h2 {
+                font-size: 20px;
+                line-height: 24px;
+            }
+
+            .customer-body {
+                padding: 0 14px 12px;
+            }
+
+            .customer-row {
+                grid-template-columns:
+                    minmax(95px, 38%)
+                    18px
+                    minmax(0, 1fr);
+
+                min-height: 40px;
+
+                font-size: 14px;
+                line-height: 18px;
+            }
+
+            .customer-label {
+                padding-right: 4px;
+            }
+
+            .customer-colon {
+                width: 18px;
+            }
+
+            .customer-value {
+                padding-left: 1px;
+            }
+
+            .customer-footer {
+                padding-top: 14px;
+            }
+
+            .customer-footer a {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
+        }
+
+
+        /* =========================================
+           HP SANGAT KECIL
+        ========================================= */
+
+        @media (max-width: 320px) {
+
+            .customer-detail {
+                padding: 6px;
+            }
+
+            .customer-header {
+                padding: 9px 12px;
+            }
+
+            .customer-body {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .customer-row {
+                grid-template-columns:
+                    minmax(85px, 37%)
+                    16px
+                    minmax(0, 1fr);
+
+                font-size: 13px;
+                line-height: 17px;
+            }
+
+            .customer-colon {
+                width: 16px;
+            }
+
+        }
+
+    </style>
+
 </x-app-layout>

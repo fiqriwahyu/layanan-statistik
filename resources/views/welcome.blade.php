@@ -288,27 +288,145 @@
     </section>
 
     {{-- Modal Layanan (satu saja, di luar grid) --}}
-    <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="serviceModalLabel"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+     <div class="modal fade"
+        id="serviceModal"
+        tabindex="-1"
+        aria-hidden="true">
+
+
+        <div class="modal-dialog
+                    modal-dialog-centered
+                    w-[calc(100%-24px)]
+                    max-w-[500px]
+                    mx-auto">
+
+
+            <div class="modal-content
+                        border-0
+                        rounded-4
+                        overflow-hidden
+                        bg-[#edf5fc]">
+
+
+                <div class="modal-body
+                            text-center
+                            p-4
+                            sm:p-5
+                            relative">
+
+
+                    {{-- CLOSE --}}
+                    <button type="button"
+                        class="btn-close
+                               position-absolute
+                               top-0
+                               end-0
+                               m-3"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+
+
+                    {{-- TITLE --}}
+                    <h5 id="serviceModalLabel"
+                        class="text-[#385683]
+                               text-[18px]
+                               sm:text-[21px]
+                               font-bold
+                               leading-tight
+                               mt-2
+                               mb-5
+                               px-6">
+                    </h5>
+
+
+                    {{-- IMAGE --}}
+                    <div class="flex
+                                items-center
+                                justify-center
+                                w-[140px]
+                                sm:w-[160px]
+                                h-[120px]
+                                sm:h-[140px]
+                                mx-auto
+                                mb-4">
+
+                        <img id="modalImage"
+                            src=""
+                            alt=""
+                            class="max-w-full
+                                   max-h-full
+                                   object-contain">
+
+                    </div>
+
+
+                    {{-- STANDAR --}}
+                    <a href="#"
+                        id="standardsLink"
+
+                        data-bs-toggle="modal"
+                        data-bs-target="#imageModal"
+
+                        class="block
+                               text-[#385683]
+                               hover:text-[#29456f]
+                               no-underline
+                               text-[12px]
+                               sm:text-[13px]
+                               font-bold
+                               mb-3">
+
+                        BACA STANDAR LAYANAN!
+
+                    </a>
+
+
+                    {{-- DESKRIPSI --}}
+                    <p id="modalDescription"
+                        class="text-gray-600
+                               text-[13px]
+                               sm:text-[14px]
+                               leading-relaxed
+                               text-justify
+                               mb-5
+                               max-w-[430px]
+                               mx-auto">
+                    </p>
+
+
+                    {{-- BUTTON --}}
+                    <a href="#"
+                        id="modalButton"
+                        target="_blank"
+
+                        class="inline-block
+                               bg-white
+                               border
+                               border-[#7fa2c7]
+                               hover:bg-[#385683]
+                               hover:text-white
+                               text-[#385683]
+                               no-underline
+                               rounded-full
+                               px-5
+                               py-2
+                               text-[12px]
+                               sm:text-[13px]
+                               font-semibold
+                               transition">
+
+                        Kunjungi Web →
+
+                    </a>
+
                 </div>
-                <div class="modal-body text-center">
-                    <img id="modalImage" src="" alt="" class="img-fluid mb-3 mt-3">
-                    <p id="modalDescription" class="text-start"></p>
-                    <h6 class="mt-3">
-                        <a href="#" id="standardsLink" data-bs-toggle="modal" data-bs-target="#imageModal">
-                            Baca Standar Layanan!
-                        </a>
-                    </h6>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <a href="#" class="btn btn-primary" id="modalButton" target="_blank">Button Text</a>
-                </div>
+
             </div>
+
         </div>
+
+    </div>
     </div>
 
     {{-- Modal Standar Layanan --}}

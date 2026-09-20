@@ -28,7 +28,9 @@ class WorkController extends Controller
 
         Work::create($data);
 
-        return redirect()->route('admin.work.index')->with('success', 'Pekerjaan berhasil ditambahkan.');
+        return redirect()
+            ->route('admin.work.index')
+            ->with('success', 'Pekerjaan berhasil ditambahkan.');
     }
 
     public function edit(Work $work)
@@ -44,13 +46,17 @@ class WorkController extends Controller
 
         $work->update($data);
 
-        return redirect()->route('admin.work.index')->with('success', 'Pekerjaan berhasil diperbarui.');
+        return redirect()
+            ->route('admin.work.index')
+            ->with('success', 'Pekerjaan berhasil diperbarui.');
     }
 
     public function destroy(Work $work)
     {
         $work->delete();
 
-        return redirect()->route('admin.work.index')->with('success', 'Pekerjaan berhasil dihapus.');
+        return redirect()
+            ->route('admin.work.index')
+            ->with('success', 'Pekerjaan berhasil dihapus.');
     }
 }

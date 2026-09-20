@@ -1,34 +1,120 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Work</h2>
-    </x-slot>
 
-    <div class="p-6 bg-white rounded shadow max-w-md mx-auto">
-        @if ($errors->any())
-            <div class="mb-4 text-red-600 font-semibold">
-                <ul class="list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="w-full px-3 sm:px-4 lg:px-5 py-4 sm:py-5">
 
-        <form action="{{ route('admin.work.update', $work->id) }}" method="POST" class="space-y-4">
-            @csrf
-            @method('PUT')
-            <div>
-                <label for="work_type" class="block font-semibold mb-1">Nama Pekerjaan</label>
-                <input type="text" name="work_type" id="work_type" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-yellow-300"
-                    value="{{ old('work_type', $work->work_type) }}">
+        <div class="w-full max-w-[420px] mx-auto
+                    border border-gray-400
+                    bg-white
+                    rounded-sm">
+
+            {{-- HEADER --}}
+            <div class="min-h-[64px]
+                        flex items-center
+                        px-4 sm:px-7
+                        py-3
+                        bg-gray-100
+                        border-b border-gray-300">
+
+                <h2 class="text-[20px] sm:text-[24px]
+                           leading-6
+                           font-normal
+                           text-gray-600
+                           break-words">
+                    Form Ubah Work
+                </h2>
+
             </div>
-            <div class="flex justify-between">
-                <a href="{{ route('admin.work.index') }}"
-                    class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded font-semibold">Batal</a>
-                <button type="submit"
-                    class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white rounded font-semibold">Update</button>
+
+            {{-- CONTENT --}}
+            <div class="px-4 sm:px-7 py-5">
+
+                {{-- ERROR --}}
+                @if ($errors->any())
+                    <div class="mb-4 text-[14px] text-red-600 break-words">
+
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">
+                                {{ $error }}
+                            </div>
+                        @endforeach
+
+                    </div>
+                @endif
+
+                {{-- FORM --}}
+                <form action="{{ route('admin.work.update', $work) }}"
+                      method="POST">
+
+                    @csrf
+                    @method('PUT')
+
+                    {{-- PEKERJAAN --}}
+                    <div class="mb-4">
+
+                        <label for="work_type"
+                            class="block mb-2
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700">
+                            Pekerjaan
+                        </label>
+
+                        <input type="text"
+                            id="work_type"
+                            name="work_type"
+                            value="{{ old('work_type', $work->work_type) }}"
+                            required
+                            autofocus
+                            placeholder="Masukkan jenis pekerjaan"
+                            class="w-full h-[40px]
+                                   border border-gray-500
+                                   rounded-sm
+                                   px-3
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700
+                                   placeholder-gray-400
+                                   focus:outline-none
+                                   focus:border-gray-700">
+
+                    </div>
+
+                    {{-- BUTTON --}}
+                    <div class="flex flex-col sm:flex-row
+                                gap-2
+                                w-full">
+
+                        {{-- KEMBALI --}}
+                        <a href="{{ route('admin.work.index') }}"
+                            class="w-full sm:w-auto
+                                   text-center
+                                   bg-blue-600
+                                   hover:bg-blue-700
+                                   text-white
+                                   text-[14px]
+                                   px-4 py-2
+                                   rounded-sm">
+                            Kembali
+                        </a>
+
+                        {{-- SIMPAN --}}
+                        <button type="submit"
+                            class="w-full sm:w-auto
+                                   bg-green-500
+                                   hover:bg-green-600
+                                   text-white
+                                   text-[14px]
+                                   px-4 py-2
+                                   rounded-sm">
+                            Simpan
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
-        </form>
+
+        </div>
+
     </div>
+
 </x-app-layout>
