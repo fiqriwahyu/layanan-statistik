@@ -18,7 +18,7 @@
                            text-gray-600
                            text-center
                            break-words">
-                    Data Sub Categorie
+                    Data Sub Kategorie
                 </h2>
 
             </div>

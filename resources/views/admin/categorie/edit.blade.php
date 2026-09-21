@@ -19,7 +19,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Ubah Categorie
+                    Form Ubah kategorie
                 </h2>
 
             </div>

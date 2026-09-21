@@ -18,7 +18,7 @@
                            text-gray-600
                            text-center
                            break-words">
-                    Data Purpose
+                    Data Tujuan
                 </h2>
 
             </div>

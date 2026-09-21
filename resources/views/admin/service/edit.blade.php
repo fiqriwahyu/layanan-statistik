@@ -19,7 +19,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Ubah Service
+                    Form Ubah jenis pelayanan
                 </h2>
 
             </div>

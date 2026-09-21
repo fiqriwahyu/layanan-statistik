@@ -11,24 +11,39 @@ class FeedbackController extends Controller
 {
     public function cekNoHp(Request $request)
     {
-        $noHp = $request->query('no_hp');
+        $noHp = trim($request->query('no_hp'));
+
         $customer = Customer::where('no_hp', $noHp)->latest()->first();
 
-        if (! $customer) {
-            return response()->json(['found' => false]);
+        if (!$customer) {
+            return response()->json([
+                'found' => false,
+                'message' => 'No HP tidak ditemukan.'
+            ]);
         }
 
-        $transaction = $customer->transactions()->latest()->first();
+        $transaction = $customer->transactions()
+            ->latest()
+            ->first();
+
+        if (!$transaction) {
+            return response()->json([
+                'found' => false,
+                'message' => 'Data transaksi untuk No HP tersebut tidak ditemukan.'
+            ]);
+        }
 
         return response()->json([
-            'found' => (bool) $transaction,
-            'transaction_id' => $transaction?->id,
+            'found' => true,
+            'transaction_id' => $transaction->id
         ]);
     }
 
     public function create(Transaction $transaction)
     {
-        return view('feedback.create', ['transaction' => $transaction]);
+        return view('feedback.create', [
+            'transaction' => $transaction
+        ]);
     }
 
     public function store(Request $request)
@@ -65,6 +80,9 @@ class FeedbackController extends Controller
             'status_transaksi' => 'Sudah dilayani',
         ]);
 
-        return redirect()->route('welcome')->with('success', 'Terima kasih atas penilaian Anda.');
+        return redirect()->route('welcome')->with(
+            'success',
+            'Terima kasih atas penilaian Anda.'
+        );
     }
 }

@@ -18,7 +18,7 @@
                            text-gray-600
                            text-center">
 
-                    Data Work
+                    Data pendidikan
 
                 </h2>
 
@@ -146,7 +146,7 @@
                                            font-normal
                                            whitespace-nowrap">
 
-                                    Nama Work
+                                    Nama Pekerjaan
 
                                 </th>
 
@@ -233,7 +233,7 @@
                                             {{-- HAPUS --}}
                                             <form action="{{ route('admin.work.destroy', $item->id) }}"
                                                 method="POST"
-                                                onsubmit="return confirm('Yakin hapus work ini?')">
+                                                onsubmit="return confirm('Yakin hapus pekerjaan ini?')">
 
                                                 @csrf
                                                 @method('DELETE')
@@ -272,7 +272,7 @@
                                                text-gray-500
                                                text-[16px]">
 
-                                        Data work tidak ditemukan
+                                        Data pekerjaan tidak ditemukan
 
                                     </td>
 

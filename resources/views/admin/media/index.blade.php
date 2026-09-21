@@ -18,7 +18,7 @@
                            text-gray-600
                            text-center">
 
-                    Data Media
+                    Data Media pelayanan
 
                 </h2>
 
@@ -145,7 +145,7 @@
                                            font-normal
                                            whitespace-nowrap">
 
-                                    Nama Media
+                                    Nama Media pelayanan
 
                                 </th>
 
@@ -269,7 +269,7 @@
                                                text-gray-500
                                                text-[16px]">
 
-                                        Data media tidak ditemukan
+                                        Data media pelayanan tidak ditemukan
 
                                     </td>
 

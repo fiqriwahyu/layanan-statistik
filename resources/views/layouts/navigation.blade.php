@@ -4,9 +4,9 @@
 
         <div>
 
-            <h1 class="text-lg font-semibold text-gray-800">
+            {{-- <h1 class="text-lg font-semibold text-gray-800">
                 Layanan Statistik BPS Kota Jambi
-            </h1>
+            </h1> --}}
 
         </div>
 

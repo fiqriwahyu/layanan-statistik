@@ -193,7 +193,7 @@
 
                 {{-- KANAN --}}
                 <div>
-                    <img src="{{ asset('images/statistik.png') }}" class="w-full rounded-xl shadow" alt="Statistik">
+                    <img src="{{ asset('images/ringkasan-pengunjung.png') }}" class="w-full rounded-xl shadow" alt="Statistik">
                 </div>
 
             </div>
@@ -546,10 +546,7 @@
 
                     {{-- Logo --}}
                     <div class="flex items-center gap-4 mt-8">
-                        <img src="{{ asset('images/logo-berakhlak.png') }}" alt="BerAKHLAK" class="h-10">
-
-                        <img src="{{ asset('images/logo-bangga.png') }}" alt="Bangga Melayani Bangsa"
-                            class="h-10">
+                        <img src="{{ asset('images/berakhlak.png') }}" alt="BerAKHLAK" class="h-10">
                     </div>
                 </div>
 
@@ -608,44 +605,57 @@
 </script>
 
 <script>
-    function penilaianModal() {
-        return {
-            open: false,
-            loading: false,
-            error: '',
-            no_hp: '',
+function penilaianModal() {
+    return {
+        open: false,
+        loading: false,
+        error: '',
+        no_hp: '',
 
-            cek() {
-                this.loading = true;
-                this.error = '';
+        async cek() {
+            this.error = '';
 
-                fetch("{{ route('feedback.cek-nohp') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            no_hp: this.no_hp
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        this.loading = false;
+            const noHp = this.no_hp.trim();
 
-                        if (data.status === 'ok') {
-                            window.location.href = `/feedback/${data.transaction_id}`;
-                        } else {
-                            this.error = 'No HP tidak ditemukan';
-                        }
-                    })
-                    .catch(() => {
-                        this.loading = false;
-                        this.error = 'Terjadi kesalahan';
-                    });
+            if (!noHp) {
+                this.error = 'Silakan masukkan nomor HP.';
+                return;
+            }
+
+            this.loading = true;
+
+            try {
+                const response = await fetch("{{ route('feedback.cek-nohp') }}?no_hp=" + encodeURIComponent(noHp), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                console.log('Response cek HP:', data);
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Terjadi kesalahan pada server.');
+                }
+
+                if (data.found === true && data.transaction_id) {
+                    window.location.href = "{{ url('/feedback') }}/" + data.transaction_id;
+                    return;
+                }
+
+                this.error = data.message || 'No HP tidak ditemukan.';
+
+            } catch (error) {
+                console.error('Error cek nomor HP:', error);
+                this.error = error.message || 'Terjadi kesalahan saat mengecek nomor HP.';
+            } finally {
+                this.loading = false;
             }
         }
     }
+}
 </script>
 
 </html>

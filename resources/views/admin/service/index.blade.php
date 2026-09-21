@@ -18,7 +18,7 @@
                            text-gray-600
                            text-center">
 
-                    Data Service
+                    Data jenis pelayanan
 
                 </h2>
 

@@ -19,7 +19,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Ubah Media
+                    Form Ubah Media Pelayanan
                 </h2>
 
             </div>

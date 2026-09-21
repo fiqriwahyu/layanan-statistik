@@ -20,7 +20,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Ubah Work
+                    Form Ubah pekerjaan
                 </h2>
 
             </div>

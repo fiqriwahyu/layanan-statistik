@@ -20,7 +20,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Tambah Purpose
+                    Form Tambah Tujuan
                 </h2>
 
             </div>

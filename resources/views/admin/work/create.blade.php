@@ -19,7 +19,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Tambah Work
+                    Form Tambah pekerjaan
                 </h2>
 
             </div>

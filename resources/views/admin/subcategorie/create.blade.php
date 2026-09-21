@@ -20,7 +20,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Tambah Sub Categorie
+                    Form Tambah Sub Kategorie
                 </h2>
 
             </div>

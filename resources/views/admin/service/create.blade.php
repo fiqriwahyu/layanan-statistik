@@ -19,7 +19,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Tambah Service
+                    Form Tambah jenis pelayanan
                 </h2>
 
             </div>

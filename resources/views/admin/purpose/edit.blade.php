@@ -20,7 +20,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Ubah Purpose
+                    Form Ubah Tujuan
                 </h2>
 
             </div>

@@ -19,7 +19,7 @@
                            font-normal
                            text-gray-600
                            break-words">
-                    Form Tambah Media
+                    Form Tambah Media Pelayanan
                 </h2>
 
             </div>
