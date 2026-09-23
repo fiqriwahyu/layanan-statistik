@@ -3,144 +3,282 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Customer;
-use App\Models\Transaction;
 use App\Models\Education;
-use App\Models\Work;
 use App\Models\Media;
-use App\Models\Service;
 use App\Models\Purpose;
+use App\Models\Service;
+use App\Models\Transaction;
+use App\Models\Work;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\DashboardExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
-    /**
-     * Menampilkan dashboard admin.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | STATISTIK UTAMA
-        |--------------------------------------------------------------------------
-        */
+        $from = $request->from;
+        $to = $request->to;
 
-        $totalCustomer = Customer::count();
+        $customerQuery = Customer::query();
+        $transactionQuery = Transaction::query();
 
-        $totalTransactions = Transaction::count();
+        if ($from) {
+            $customerQuery->whereDate('created_at', '>=', $from);
+            $transactionQuery->whereDate('created_at', '>=', $from);
+        }
 
-        $belumDilayani = Transaction::where(
-            'status_transaksi',
-            'Belum dilayani'
-        )->count();
+        if ($to) {
+            $customerQuery->whereDate('created_at', '<=', $to);
+            $transactionQuery->whereDate('created_at', '<=', $to);
+        }
 
-        $sudahDilayani = Transaction::where(
-            'status_transaksi',
-            'Sudah dilayani'
-        )->count();
+        $totalCustomer = $customerQuery->count();
 
+        $belumDilayani = (clone $transactionQuery)
+            ->where('status_transaksi', 'Belum dilayani')
+            ->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA PENDIDIKAN
-        |--------------------------------------------------------------------------
-        */
+        $sudahDilayani = (clone $transactionQuery)
+            ->where('status_transaksi', 'Sudah dilayani')
+            ->count();
 
-        $education = Education::withCount('customers')
-            ->orderBy('id')
-            ->get();
+        $pendidikan = Education::withCount([
+            'customers' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('customers.created_at', '>=', $from);
+                }
 
-        $chartLabelsEducation = $education->pluck('education_type');
+                if ($to) {
+                    $query->whereDate('customers.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
 
-        $chartDataEducation = $education->pluck('customers_count');
+        $pekerjaan = Work::withCount([
+            'customers' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('customers.created_at', '>=', $from);
+                }
 
+                if ($to) {
+                    $query->whereDate('customers.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA PEKERJAAN
-        |--------------------------------------------------------------------------
-        */
+        $mediaPelayanan = Media::withCount([
+            'transactions' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('transactions.created_at', '>=', $from);
+                }
 
-        $work = Work::withCount('customers')
-            ->orderBy('id')
-            ->get();
+                if ($to) {
+                    $query->whereDate('transactions.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
 
-        $chartLabelsWork = $work->pluck('work_type');
+        $jenisPelayanan = Service::withCount([
+            'transactions' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('transactions.created_at', '>=', $from);
+                }
 
-        $chartDataWork = $work->pluck('customers_count');
+                if ($to) {
+                    $query->whereDate('transactions.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
 
+        $tujuan = Purpose::withCount([
+            'transactions' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('transactions.created_at', '>=', $from);
+                }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA MEDIA PELAYANAN
-        |--------------------------------------------------------------------------
-        */
+                if ($to) {
+                    $query->whereDate('transactions.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
 
-        $media = Media::withCount('transactions')
-            ->orderBy('id')
-            ->get();
+        $chartLabelsEducation = $pendidikan->pluck('education_type')->values();
+        $chartDataEducation = $pendidikan->pluck('customers_count')->values();
 
-        $chartLabelsMedia = $media->pluck('media_type');
+        $chartLabelsWork = $pekerjaan->pluck('work_type')->values();
+        $chartDataWork = $pekerjaan->pluck('customers_count')->values();
 
-        $chartDataMedia = $media->pluck('transactions_count');
+        $chartLabelsMedia = $mediaPelayanan->pluck('media_type')->values();
+        $chartDataMedia = $mediaPelayanan->pluck('transactions_count')->values();
 
+        $chartLabelsService = $jenisPelayanan->pluck('service_type')->values();
+        $chartDataService = $jenisPelayanan->pluck('transactions_count')->values();
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA JENIS PELAYANAN
-        |--------------------------------------------------------------------------
-        */
-
-        $service = Service::withCount('transactions')
-            ->orderBy('id')
-            ->get();
-
-        $chartLabelsService = $service->pluck('service_type');
-
-        $chartDataService = $service->pluck('transactions_count');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA TUJUAN
-        |--------------------------------------------------------------------------
-        */
-
-        $purpose = Purpose::withCount('transactions')
-            ->orderBy('id')
-            ->get();
-
-        $chartLabelsPurpose = $purpose->pluck('purpose_type');
-
-        $chartDataPurpose = $purpose->pluck('transactions_count');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | KIRIM DATA KE VIEW
-        |--------------------------------------------------------------------------
-        */
+        $chartLabelsPurpose = $tujuan->pluck('purpose_type')->values();
+        $chartDataPurpose = $tujuan->pluck('transactions_count')->values();
 
         return view('admin.dashboard', compact(
             'totalCustomer',
-            'totalTransactions',
             'belumDilayani',
             'sudahDilayani',
-
             'chartLabelsEducation',
             'chartDataEducation',
-
             'chartLabelsWork',
             'chartDataWork',
-
             'chartLabelsMedia',
             'chartDataMedia',
-
             'chartLabelsService',
             'chartDataService',
-
             'chartLabelsPurpose',
-            'chartDataPurpose'
+            'chartDataPurpose',
+            'from',
+            'to'
         ));
     }
+
+    public function exportPDF(Request $request)
+    {
+        $from = $request->from;
+        $to = $request->to;
+
+        $customerQuery = Customer::query();
+        $transactionQuery = Transaction::query();
+
+        if ($from) {
+            $customerQuery->whereDate('created_at', '>=', $from);
+            $transactionQuery->whereDate('created_at', '>=', $from);
+        }
+
+        if ($to) {
+            $customerQuery->whereDate('created_at', '<=', $to);
+            $transactionQuery->whereDate('created_at', '<=', $to);
+        }
+
+        $totalPengunjung = $customerQuery->count();
+        $totalTransaksi = $transactionQuery->count();
+
+        $belumDilayani = (clone $transactionQuery)
+            ->where('status_transaksi', 'Belum dilayani')
+            ->count();
+
+        $sudahDilayani = (clone $transactionQuery)
+            ->where('status_transaksi', 'Sudah dilayani')
+            ->count();
+
+        $pendidikan = Education::withCount([
+            'customers' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('customers.created_at', '>=', $from);
+                }
+
+                if ($to) {
+                    $query->whereDate('customers.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
+
+        $pekerjaan = Work::withCount([
+            'customers' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('customers.created_at', '>=', $from);
+                }
+
+                if ($to) {
+                    $query->whereDate('customers.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
+
+        $mediaPelayanan = Media::withCount([
+            'transactions' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('transactions.created_at', '>=', $from);
+                }
+
+                if ($to) {
+                    $query->whereDate('transactions.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
+
+        $jenisPelayanan = Service::withCount([
+            'transactions' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('transactions.created_at', '>=', $from);
+                }
+
+                if ($to) {
+                    $query->whereDate('transactions.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
+
+        $tujuan = Purpose::withCount([
+            'transactions' => function ($query) use ($from, $to) {
+                if ($from) {
+                    $query->whereDate('transactions.created_at', '>=', $from);
+                }
+
+                if ($to) {
+                    $query->whereDate('transactions.created_at', '<=', $to);
+                }
+            }
+        ])->orderBy('id')->get();
+
+        if ($from && $to) {
+            $periode = date('d-m-Y', strtotime($from)) . ' s.d. ' . date('d-m-Y', strtotime($to));
+        } elseif ($from) {
+            $periode = 'Mulai ' . date('d-m-Y', strtotime($from));
+        } elseif ($to) {
+            $periode = 'Sampai ' . date('d-m-Y', strtotime($to));
+        } else {
+            $periode = 'Seluruh Data';
+        }
+
+        $pdf = Pdf::loadView('admin.pdf-dashboard', [
+            'totalPengunjung' => $totalPengunjung,
+            'totalTransaksi' => $totalTransaksi,
+            'belumDilayani' => $belumDilayani,
+            'sudahDilayani' => $sudahDilayani,
+            'pendidikan' => $pendidikan,
+            'pekerjaan' => $pekerjaan,
+            'mediaPelayanan' => $mediaPelayanan,
+            'jenisPelayanan' => $jenisPelayanan,
+            'tujuan' => $tujuan,
+            'periode' => $periode,
+        ]);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download(
+            'Laporan_Beranda_BPS_Kota_Jambi_' . now()->format('Ymd_His') . '.pdf'
+        );
+    }
+
+    public function exportExcel(Request $request)
+{
+    $format = $request->query('format', 'xlsx');
+
+    $export = new DashboardExport(
+        $request->query('from'),
+        $request->query('to')
+    );
+
+    if ($format === 'csv') {
+        return Excel::download(
+            $export,
+            'Laporan_Beranda_BPS_Kota_Jambi_' . now()->format('Ymd_His') . '.csv',
+            \Maatwebsite\Excel\Excel::CSV
+        );
+    }
+
+    return Excel::download(
+        $export,
+        'Laporan_Beranda_BPS_Kota_Jambi_' . now()->format('Ymd_His') . '.xlsx',
+        \Maatwebsite\Excel\Excel::XLSX
+    );
+}
 }

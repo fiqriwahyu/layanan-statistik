@@ -1,42 +1,160 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl">Tambah Admin</h2>
-    </x-slot>
 
-    <div class="bg-white p-6 rounded shadow w-full max-w-xl">
+    <div class="w-full px-3 sm:px-4 lg:px-5 py-4 sm:py-5">
 
-        <form action="{{ route('superadmin.admin.store') }}" method="POST">
-            @csrf
+        <div class="w-full max-w-[420px] mx-auto
+                    border border-gray-400
+                    bg-white
+                    rounded-sm">
 
-            <div class="mb-4">
-                <label class="block font-semibold mb-1">Nama</label>
-                <input type="text" name="name" class="w-full border border-gray-300 rounded px-3 py-2" required>
-            </div>
+            <div class="min-h-[64px]
+                        flex items-center
+                        px-4 sm:px-7
+                        py-3
+                        bg-gray-100
+                        border-b border-gray-300">
 
-            <div class="mb-4">
-                <label class="block font-semibold mb-1">Email</label>
-                <input type="email" name="email" class="w-full border border-gray-300 rounded px-3 py-2" required>
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-semibold mb-1">Password</label>
-                <input type="password" name="password" class="w-full border border-gray-300 rounded px-3 py-2" required>
-            </div>
-
-            <div class="flex gap-2">
-
-                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                    Simpan
-                </button>
-
-                <a href="{{ route('superadmin.admin.index') }}"
-                    class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">
-                    Kembali
-                </a>
+                <h2 class="text-[20px] sm:text-[24px]
+                           leading-6
+                           font-normal
+                           text-gray-600
+                           break-words">
+                    Form Tambah Admin
+                </h2>
 
             </div>
 
-        </form>
+            <div class="px-4 sm:px-7 py-5">
+
+                @if ($errors->any())
+                    <div class="mb-4 text-[14px] text-red-600 break-words">
+
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">
+                                {{ $error }}
+                            </div>
+                        @endforeach
+
+                    </div>
+                @endif
+
+                <form action="{{ route('superadmin.admin.store') }}" method="POST">
+                    @csrf
+
+                    <div class="mb-4">
+
+                        <label for="name"
+                            class="block mb-2
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700">
+                            Nama Admin
+                        </label>
+
+                        <input type="text"
+                            name="name"
+                            id="name"
+                            value="{{ old('name') }}"
+                            required
+                            autofocus
+                            placeholder="Masukkan nama admin"
+                            class="w-full h-[40px]
+                                   border border-gray-500
+                                   rounded-sm
+                                   px-3
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700
+                                   placeholder-gray-400
+                                   focus:outline-none
+                                   focus:border-gray-700">
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label for="email"
+                            class="block mb-2
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700">
+                            Email
+                        </label>
+
+                        <input type="email"
+                            name="email"
+                            id="email"
+                            value="{{ old('email') }}"
+                            required
+                            placeholder="Masukkan email admin"
+                            class="w-full h-[40px]
+                                   border border-gray-500
+                                   rounded-sm
+                                   px-3
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700
+                                   placeholder-gray-400
+                                   focus:outline-none
+                                   focus:border-gray-700">
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label for="password"
+                            class="block mb-2
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700">
+                            Password
+                        </label>
+
+                        <input type="password"
+                            name="password"
+                            id="password"
+                            required
+                            placeholder="Masukkan password"
+                            class="w-full h-[40px]
+                                   border border-gray-500
+                                   rounded-sm
+                                   px-3
+                                   text-[15px] sm:text-[16px]
+                                   text-gray-700
+                                   placeholder-gray-400
+                                   focus:outline-none
+                                   focus:border-gray-700">
+
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2 w-full">
+
+                        <a href="{{ route('superadmin.admin.index') }}"
+                            class="w-full sm:w-auto
+                                   text-center
+                                   px-4 py-2
+                                   bg-blue-600
+                                   hover:bg-blue-700
+                                   text-white
+                                   text-[14px]
+                                   rounded-sm">
+                            Kembali
+                        </a>
+
+                        <button type="submit"
+                            class="w-full sm:w-auto
+                                   px-4 py-2
+                                   bg-green-500
+                                   hover:bg-green-600
+                                   text-white
+                                   text-[14px]
+                                   rounded-sm">
+                            Simpan
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
 
     </div>
+
 </x-app-layout>

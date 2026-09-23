@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Support\Facades\Auth;
-// use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 use App\Http\Controllers\FormTamuController;
 use App\Http\Controllers\FeedbackController;
@@ -22,119 +19,13 @@ use App\Http\Controllers\Admin\PurposeController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\AdminController;
 
+use App\Http\Middleware\SuperAdminMiddleware;
 
-/*
-|--------------------------------------------------------------------------
-| HALAMAN UTAMA
-|--------------------------------------------------------------------------
-*/
-
+// Halaman utama
 Route::get('/', [WelcomeController::class, 'index'])
     ->name('welcome');
 
-
-/*
-|--------------------------------------------------------------------------
-| LOGIN
-|--------------------------------------------------------------------------
-|
-| Login dibuat langsung di web.php untuk sementara.
-| Tidak menggunakan Breeze auth.php.
-|
-*/
-
-// Route::get('/login', function () {
-//     return view('auth.login');
-// })->name('login');
-
-
-// Route::post('/login', function (Request $request) {
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | VALIDASI
-//     |--------------------------------------------------------------------------
-//     */
-
-//     $credentials = $request->validate([
-//         'email' => [
-//             'required',
-//             'email',
-//         ],
-
-//         'password' => [
-//             'required',
-//         ],
-//     ]);
-
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | LOGIN
-//     |--------------------------------------------------------------------------
-//     */
-
-//     if (!Auth::attempt(
-//         [
-//             'email' => $credentials['email'],
-//             'password' => $credentials['password'],
-//         ],
-//         $request->boolean('remember')
-//     )) {
-
-//         return back()
-//             ->withInput($request->only('email', 'remember'))
-//             ->withErrors([
-//                 'email' => 'Email atau password salah.',
-//             ]);
-//     }
-
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | REGENERATE SESSION
-//     |--------------------------------------------------------------------------
-//     */
-
-//     $request->session()->regenerate();
-
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | REDIRECT KE DASHBOARD
-//     |--------------------------------------------------------------------------
-//     */
-
-//     return redirect()->route('admin.dashboard');
-
-// })->name('login.store');
-
-
-/*
-|--------------------------------------------------------------------------
-| LOGOUT
-|--------------------------------------------------------------------------
-*/
-
-// Route::post('/logout', function (Request $request) {
-
-//     Auth::logout();
-
-//     $request->session()->invalidate();
-
-//     $request->session()->regenerateToken();
-
-//     return redirect()->route('login');
-
-// })->middleware('auth')->name('logout');
-
-
-/*
-|--------------------------------------------------------------------------
-| FORM TAMU
-|--------------------------------------------------------------------------
-*/
-
+// Form tamu
 Route::get('/cek-nohp', [FormTamuController::class, 'cekNoHp'])
     ->name('form-tamu.cek-nohp');
 
@@ -144,12 +35,10 @@ Route::get('/form-tamu', [FormTamuController::class, 'create'])
 Route::post('/form-tamu', [FormTamuController::class, 'store'])
     ->name('form-tamu.store');
 
-
-/*
-|--------------------------------------------------------------------------
-| FEEDBACK
-|--------------------------------------------------------------------------
-*/
+// Feedback
+Route::get('/feedback', function () {
+    return view('feedback.index');
+})->name('feedback.index');
 
 Route::get('/feedback/cek-nohp', [FeedbackController::class, 'cekNoHp'])
     ->name('feedback.cek-nohp');
@@ -160,13 +49,7 @@ Route::get('/feedback/{transaction}', [FeedbackController::class, 'create'])
 Route::post('/feedback', [FeedbackController::class, 'store'])
     ->name('feedback.store');
 
-
-/*
-|--------------------------------------------------------------------------
-| PROFILE
-|--------------------------------------------------------------------------
-*/
-
+// Profile
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])
@@ -179,37 +62,23 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN
-|--------------------------------------------------------------------------
-|
-| Untuk sementara hanya menggunakan middleware auth.
-|
-*/
-
+// Admin
 Route::prefix('admin')
     ->name('admin.')
     ->middleware('auth')
     ->group(function () {
 
-        /*
-        |--------------------------------------------------------------------------
-        | DASHBOARD
-        |--------------------------------------------------------------------------
-        */
-
+        // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPDF'])
+            ->name('dashboard.export.pdf');
 
-        /*
-        |--------------------------------------------------------------------------
-        | PENDIDIKAN
-        |--------------------------------------------------------------------------
-        */
+        Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])
+            ->name('dashboard.export.excel');
 
+        // Pendidikan
         Route::get('/pendidikan', [EducationController::class, 'index'])
             ->name('education.index');
 
@@ -228,13 +97,7 @@ Route::prefix('admin')
         Route::delete('/pendidikan/{id}', [EducationController::class, 'destroy'])
             ->name('education.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | PEKERJAAN
-        |--------------------------------------------------------------------------
-        */
-
+        // Pekerjaan
         Route::get('/work', [WorkController::class, 'index'])
             ->name('work.index');
 
@@ -253,13 +116,7 @@ Route::prefix('admin')
         Route::delete('/work/{work}', [WorkController::class, 'destroy'])
             ->name('work.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | MEDIA PELAYANAN
-        |--------------------------------------------------------------------------
-        */
-
+        // Media
         Route::get('/media', [MediaController::class, 'index'])
             ->name('media.index');
 
@@ -278,13 +135,7 @@ Route::prefix('admin')
         Route::delete('/media/{id}', [MediaController::class, 'destroy'])
             ->name('media.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JENIS PELAYANAN
-        |--------------------------------------------------------------------------
-        */
-
+        // Service
         Route::get('/service', [ServiceController::class, 'index'])
             ->name('service.index');
 
@@ -303,13 +154,7 @@ Route::prefix('admin')
         Route::delete('/service/{id}', [ServiceController::class, 'destroy'])
             ->name('service.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | KATEGORI
-        |--------------------------------------------------------------------------
-        */
-
+        // Kategori
         Route::get('/categorie', [CategorieController::class, 'index'])
             ->name('categorie.index');
 
@@ -328,13 +173,7 @@ Route::prefix('admin')
         Route::delete('/categorie/{categorie}', [CategorieController::class, 'destroy'])
             ->name('categorie.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SUB KATEGORI
-        |--------------------------------------------------------------------------
-        */
-
+        // Sub Kategori
         Route::get('/subcategorie', [SubCategorieController::class, 'index'])
             ->name('subcategorie.index');
 
@@ -353,32 +192,20 @@ Route::prefix('admin')
         Route::delete('/subcategorie/{subcategorie}', [SubCategorieController::class, 'destroy'])
             ->name('subcategorie.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | PENGUNJUNG
-        |--------------------------------------------------------------------------
-        */
-
+        // Customer
         Route::get('/customer/export-pdf', [CustomerController::class, 'exportPDF'])
-    ->name('customer.export.pdf');
+            ->name('customer.export.pdf');
 
-Route::get('/customer/export/{format?}', [CustomerController::class, 'exportExcel'])
-    ->name('customer.export.excel');
+        Route::get('/customer/export/{format?}', [CustomerController::class, 'exportExcel'])
+            ->name('customer.export.excel');
 
-Route::get('/customer', [CustomerController::class, 'index'])
-    ->name('customer.index');
+        Route::get('/customer', [CustomerController::class, 'index'])
+            ->name('customer.index');
 
-Route::get('/customer/{customer}', [CustomerController::class, 'show'])
-    ->name('customer.show');
+        Route::get('/customer/{customer}', [CustomerController::class, 'show'])
+            ->name('customer.show');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TUJUAN
-        |--------------------------------------------------------------------------
-        */
-
+        // Purpose
         Route::get('/purpose', [PurposeController::class, 'index'])
             ->name('purpose.index');
 
@@ -397,39 +224,27 @@ Route::get('/customer/{customer}', [CustomerController::class, 'show'])
         Route::delete('/purpose/{id}', [PurposeController::class, 'destroy'])
             ->name('purpose.destroy');
 
+        // Transaction
+        Route::get('/transaction', [TransactionController::class, 'index'])
+            ->name('transaction.index');
 
-        /*
-        |--------------------------------------------------------------------------
-        | TRANSAKSI
-        |--------------------------------------------------------------------------
-        */
+        Route::get('/transaction/{transaksi}', [TransactionController::class, 'show'])
+            ->name('transaction.show');
 
-Route::get('/transaction', [TransactionController::class, 'index'])
-    ->name('transaction.index');
+        Route::put('/transaction/{transaksi}/status', [TransactionController::class, 'updateStatus'])
+            ->name('transaction.updateStatus');
+        
+        Route::get('/transaction/export/pdf', [TransactionController::class, 'exportPDF'])
+            ->name('transaction.export.pdf');
 
-Route::get('/transaction/{transaksi}', [TransactionController::class, 'show'])
-    ->name('transaction.show');
-
-Route::put('/transaction/{transaksi}/update-status', [TransactionController::class, 'updateStatus'])
-    ->name('transaction.updateStatus');
-
-// Route::delete('/transaction/{transaksi}', [TransactionController::class, 'destroy'])
-//     ->name('transaction.destroy');
+        Route::get('/transaction/export/excel', [TransactionController::class, 'exportExcel'])
+            ->name('transaction.export.excel');
     });
 
-
-/*
-|--------------------------------------------------------------------------
-| SUPER ADMIN
-|--------------------------------------------------------------------------
-|
-| Untuk sementara hanya menggunakan auth.
-|
-*/
-
+// Super Admin
 Route::prefix('superadmin')
     ->name('superadmin.')
-    ->middleware('auth')
+    ->middleware(['auth', SuperAdminMiddleware::class])
     ->group(function () {
 
         Route::get('/admin', [AdminController::class, 'index'])
@@ -451,4 +266,4 @@ Route::prefix('superadmin')
             ->name('admin.destroy');
     });
 
-    require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';

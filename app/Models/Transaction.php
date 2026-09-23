@@ -9,6 +9,8 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'transactions';
+
     protected $fillable = [
         'customer_id',
         'media_id',
@@ -18,6 +20,14 @@ class Transaction extends Model
         'data_diminta',
         'status_transaksi',
         'status_penilaian',
+        'bukti_pelayanan',
+        'keterangan_pelayanan',
+        'dilayani_pada',
+        'dilayani_oleh',
+    ];
+
+    protected $casts = [
+        'dilayani_pada' => 'datetime',
     ];
 
     public function customer()
@@ -42,11 +52,16 @@ class Transaction extends Model
 
     public function subCategorie()
     {
-        return $this->belongsTo(SubCategorie::class, 'sub_categorie_id');
+        return $this->belongsTo(SubCategorie::class);
     }
 
     public function feedback()
     {
         return $this->hasOne(Feedback::class);
+    }
+
+    public function dilayaniOleh()
+    {
+        return $this->belongsTo(User::class, 'dilayani_oleh');
     }
 }

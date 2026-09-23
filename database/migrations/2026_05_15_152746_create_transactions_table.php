@@ -13,14 +13,47 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers');
-            $table->foreignId('media_id')->constrained('media');
-            $table->foreignId('sub_categorie_id')->constrained('sub_categories');
-            $table->foreignId('service_id')->constrained('services');
-            $table->foreignId('purpose_id')->constrained('purposes');
+
+            $table->foreignId('customer_id')
+                ->constrained('customers');
+
+            $table->foreignId('media_id')
+                ->constrained('media');
+
+            $table->foreignId('sub_categorie_id')
+                ->constrained('sub_categories');
+
+            $table->foreignId('service_id')
+                ->constrained('services');
+
+            $table->foreignId('purpose_id')
+                ->constrained('purposes');
+
             $table->text('data_diminta');
-            $table->string('status_transaksi')->default('Belum dilayani');
-            $table->string('status_penilaian')->default('Belum menilai');
+
+            // Status transaksi
+            $table->string('status_transaksi')
+                ->default('Belum dilayani');
+
+            // Data penyelesaian pelayanan
+            $table->string('bukti_pelayanan')
+                ->nullable();
+
+            $table->text('keterangan_pelayanan')
+                ->nullable();
+
+            $table->timestamp('dilayani_pada')
+                ->nullable();
+
+            $table->foreignId('dilayani_oleh')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            // Status penilaian
+            $table->string('status_penilaian')
+                ->default('Belum menilai');
+
             $table->timestamps();
         });
     }

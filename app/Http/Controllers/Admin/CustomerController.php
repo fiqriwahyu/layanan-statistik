@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Exports\CustomerExport;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -31,7 +33,8 @@ class CustomerController extends Controller
         $customers = $query
             ->with(['education', 'work'])
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.customer.index', compact('customers'));
     }
@@ -43,22 +46,33 @@ class CustomerController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $format = $request->query('format', 'csv');
+        $format = strtolower($request->query('format', 'xlsx'));
 
-        $extension = $format === 'xlsx'
-            ? 'xlsx'
-            : 'csv';
+        $export = new CustomerExport(
+            $request->query('search'),
+            $request->query('from'),
+            $request->query('to')
+        );
 
-        $filename = 'customers_export_' . now()->format('Ymd_His') . '.' . $extension;
+        if ($format === 'csv') {
+            return Excel::download(
+                $export,
+                'Laporan_Data_Pengunjung_' . now()->format('Ymd_His') . '.csv',
+                \Maatwebsite\Excel\Excel::CSV
+            );
+        }
 
+        return Excel::download(
+            $export,
+            'Laporan_Data_Pengunjung_' . now()->format('Ymd_His') . '.xlsx',
+            \Maatwebsite\Excel\Excel::XLSX
+        );
+    }
+
+    public function exportPDF(Request $request)
+    {
         $query = Customer::with(['work', 'education'])
             ->orderBy('created_at', 'desc');
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('search')) {
             $query->where(function ($sub) use ($request) {
@@ -66,12 +80,6 @@ class CustomerController extends Controller
                     ->orWhere('no_hp', 'like', '%' . $request->search . '%');
             });
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('from')) {
             $query->whereDate('created_at', '>=', $request->from);
@@ -83,160 +91,28 @@ class CustomerController extends Controller
 
         $customers = $query->get();
 
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ];
-
-        $callback = function () use ($customers) {
-
-            $handle = fopen('php://output', 'w');
-
-            // BOM agar Excel membaca UTF-8 dengan benar
-            fwrite($handle, "\xEF\xBB\xBF");
-
-            fputcsv($handle, [
-                'Nama',
-                'No HP',
-                'Jenis Kelamin',
-                'Email',
-                'Pendidikan',
-                'Pekerjaan',
-                'Tanggal'
-            ]);
-
-            foreach ($customers as $customer) {
-
-                fputcsv($handle, [
-                    $customer->nama_lengkap,
-                    $customer->no_hp,
-                    $customer->jenis_kelamin,
-                    $customer->email,
-                    $customer->education?->education_type,
-                    $customer->work?->work_type,
-                    $customer->created_at?->format('Y-m-d H:i:s'),
-                ]);
-            }
-
-            fclose($handle);
-        };
-
-        return response()->stream(
-            $callback,
-            200,
-            $headers
-        );
-    }
-
-    public function exportPDF(Request $request)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | QUERY DATA CUSTOMER
-        |--------------------------------------------------------------------------
-        */
-
-        $query = Customer::with([
-            'work',
-            'education'
-        ])->orderBy('created_at', 'desc');
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
-
-        if ($request->filled('search')) {
-            $query->where(function ($sub) use ($request) {
-
-                $sub->where(
-                    'nama_lengkap',
-                    'like',
-                    '%' . $request->search . '%'
-                )
-
-                ->orWhere(
-                    'no_hp',
-                    'like',
-                    '%' . $request->search . '%'
-                );
-
-            });
+        if ($request->filled('from') && $request->filled('to')) {
+            $periode = date('d-m-Y', strtotime($request->from))
+                . ' s.d. ' .
+                date('d-m-Y', strtotime($request->to));
+        } elseif ($request->filled('from')) {
+            $periode = 'Mulai ' . date('d-m-Y', strtotime($request->from));
+        } elseif ($request->filled('to')) {
+            $periode = 'Sampai ' . date('d-m-Y', strtotime($request->to));
+        } else {
+            $periode = 'Seluruh Periode';
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL DARI
-        |--------------------------------------------------------------------------
-        */
+        $pdf = Pdf::loadView('admin.customer.pdf', [
+            'pengunjungs' => $customers,
+            'periode' => $periode,
+            'search' => $request->search,
+        ]);
 
-        if ($request->filled('from')) {
-
-            $query->whereDate(
-                'created_at',
-                '>=',
-                $request->from
-            );
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL SAMPAI
-        |--------------------------------------------------------------------------
-        */
-
-        if ($request->filled('to')) {
-
-            $query->whereDate(
-                'created_at',
-                '<=',
-                $request->to
-            );
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA
-        |--------------------------------------------------------------------------
-        */
-
-        $customers = $query->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE PDF
-        |--------------------------------------------------------------------------
-        */
-
-        $pdf = Pdf::loadView(
-            'admin.customer.pdf',
-            [
-                'pengunjungs' => $customers,
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | UKURAN KERTAS
-        |--------------------------------------------------------------------------
-        */
-
-        $pdf->setPaper(
-            'A4',
-            'landscape'
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DOWNLOAD PDF
-        |--------------------------------------------------------------------------
-        */
+        $pdf->setPaper('A4', 'landscape');
 
         return $pdf->download(
-            'laporan_pengunjung.pdf'
+            'Laporan_Data_Pengunjung_' . now()->format('Ymd_His') . '.pdf'
         );
     }
 }

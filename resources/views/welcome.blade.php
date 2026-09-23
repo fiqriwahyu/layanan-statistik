@@ -471,29 +471,61 @@
                 Beri Nilai
             </a>
 
-            {{-- MODAL --}}
-            <div x-show="open" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-
+            {{-- MODAL CEK NO HP --}}
+            <div x-show="open" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
                 <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 text-left">
-                    <h2 class="text-lg font-semibold mb-4 text-[#385683]">
-                        Masukkan No HP
-                    </h2>
+                    <h2 class="text-lg font-semibold mb-4 text-[#385683]">Masukkan No HP</h2>
 
-                    <input x-model="no_hp" type="text" class="w-full border rounded px-3 py-2 mb-3 text-black"
+                    <input x-model="no_hp" @keydown.enter.prevent="cek" type="text" inputmode="numeric"
+                        class="w-full border rounded px-3 py-2 mb-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="08123456789">
 
-                    <p x-show="error" class="text-red-600 text-sm mb-3" x-text="error"></p>
+                    <p x-show="error" x-cloak class="text-red-600 text-sm mb-3" x-text="error"></p>
 
                     <div class="flex justify-end gap-2">
-                        <button @click="open=false" class="px-4 py-2 bg-gray-300 rounded">
-                            Batal
-                        </button>
-
-                        <button @click="cek" class="px-4 py-2 bg-blue-600 text-white rounded">
+                        <button type="button" @click="open=false" class="px-4 py-2 bg-gray-300 rounded">Batal</button>
+                        <button type="button" @click="cek" :disabled="loading"
+                            class="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-60">
                             <span x-show="!loading">Lanjut</span>
                             <span x-show="loading">Mengecek...</span>
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {{-- MODAL DAFTAR TRANSAKSI --}}
+            <div x-show="showTransactions" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] px-4">
+                <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6 text-left">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h2 class="text-lg font-semibold text-[#385683]">Transaksi yang Dapat Dinilai</h2>
+                            <p class="text-sm text-gray-500 mt-1">Pilih transaksi yang ingin Anda nilai.</p>
+                        </div>
+                        <button type="button" @click="showTransactions=false"
+                            class="text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
+                    </div>
+
+                    <div class="max-h-[400px] overflow-y-auto space-y-3">
+                        <template x-for="transaction in transactions" :key="transaction.id">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="font-semibold text-gray-800">
+                                    Transaksi #<span x-text="transaction.id"></span>
+                                </div>
+                                <div class="text-sm text-gray-500 mt-1">
+                                    Tanggal: <span x-text="transaction.tanggal"></span>
+                                </div>
+                                <div class="text-sm text-gray-600 mt-1">
+                                    Data diminta: <span x-text="transaction.data_diminta"></span>
+                                </div>
+                                <a :href="'{{ url('/feedback') }}/' + transaction.id"
+                                    class="inline-flex items-center justify-center mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg">
+                                    Beri Penilaian
+                                </a>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
                 </div>
             </div>
 
@@ -608,9 +640,11 @@
 function penilaianModal() {
     return {
         open: false,
+        showTransactions: false,
         loading: false,
         error: '',
         no_hp: '',
+        transactions: [],
 
         async cek() {
             this.error = '';
@@ -625,10 +659,13 @@ function penilaianModal() {
             this.loading = true;
 
             try {
-                const response = await fetch("{{ route('feedback.cek-nohp') }}?no_hp=" + encodeURIComponent(noHp), {
+                const url = "{{ route('feedback.cek-nohp') }}?no_hp=" + encodeURIComponent(noHp);
+
+                const response = await fetch(url, {
                     method: 'GET',
                     headers: {
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
 
@@ -640,13 +677,15 @@ function penilaianModal() {
                     throw new Error(data.message || 'Terjadi kesalahan pada server.');
                 }
 
-                if (data.found === true && data.transaction_id) {
-                    window.location.href = "{{ url('/feedback') }}/" + data.transaction_id;
+                if (data.found === true && Array.isArray(data.transactions) && data.transactions.length > 0) {
+                    this.transactions = data.transactions;
+                    this.open = false;
+                    this.showTransactions = true;
+                    this.no_hp = '';
                     return;
                 }
 
-                this.error = data.message || 'No HP tidak ditemukan.';
-
+                this.error = data.message || 'Tidak ada transaksi yang dapat dinilai.';
             } catch (error) {
                 console.error('Error cek nomor HP:', error);
                 this.error = error.message || 'Terjadi kesalahan saat mengecek nomor HP.';
