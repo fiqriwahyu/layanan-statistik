@@ -33,36 +33,50 @@
             <div class="mb-6 p-4 rounded-lg bg-blue-50 border border-blue-200">
 
                 <div class="font-semibold text-gray-800">
-                    Transaksi #{{ $transaction->id }}
+                    Layanan Statistik
                 </div>
 
                 <div class="text-sm text-gray-600 mt-1">
-                    Tanggal:
+                    Tanggal layanan:
                     {{ $transaction->created_at ? $transaction->created_at->format('d-m-Y H:i') : '-' }}
                 </div>
 
                 <div class="text-sm text-gray-600 mt-1">
-                    Data diminta:
+                    Data yang diminta:
                     {{ $transaction->data_diminta ?? '-' }}
                 </div>
 
             </div>
 
             @if ($errors->any())
+
                 <div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
+
                     <ul class="list-disc pl-5 text-sm">
+
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
+
                     </ul>
+
                 </div>
+
             @endif
 
-            <form action="{{ route('feedback.store') }}" method="POST" class="space-y-7">
+            <form
+                action="{{ route('feedback.store') }}"
+                method="POST"
+                class="space-y-7"
+            >
 
                 @csrf
 
-                <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                <input
+                    type="hidden"
+                    name="transaction_id"
+                    value="{{ $transaction->id }}"
+                >
 
                 <div x-data="{ rating: {{ old('rating_pelayanan', 0) }} }">
 
@@ -73,25 +87,37 @@
                     <div class="flex gap-2">
 
                         @for ($i = 1; $i <= 5; $i++)
+
                             <button
                                 type="button"
                                 @click="rating = {{ $i }}"
                                 class="focus:outline-none"
                             >
+
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     class="w-9 h-9 transition"
-                                    :class="rating >= {{ $i }} ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'"
+                                    :class="rating >= {{ $i }}
+                                        ? 'text-yellow-400 fill-yellow-400'
+                                        : 'text-gray-300 fill-gray-300'"
                                 >
+
                                     <path d="M12 2.5l2.94 5.95 6.56.95-4.75 4.63 1.12 6.54L12 17.48l-5.87 3.09 1.12-6.54L2.5 9.4l6.56-.95L12 2.5z"/>
+
                                 </svg>
+
                             </button>
+
                         @endfor
 
                     </div>
 
-                    <input type="hidden" name="rating_pelayanan" :value="rating">
+                    <input
+                        type="hidden"
+                        name="rating_pelayanan"
+                        :value="rating"
+                    >
 
                 </div>
 
@@ -104,25 +130,37 @@
                     <div class="flex gap-2">
 
                         @for ($i = 1; $i <= 5; $i++)
+
                             <button
                                 type="button"
                                 @click="rating = {{ $i }}"
                                 class="focus:outline-none"
                             >
+
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     class="w-9 h-9 transition"
-                                    :class="rating >= {{ $i }} ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'"
+                                    :class="rating >= {{ $i }}
+                                        ? 'text-yellow-400 fill-yellow-400'
+                                        : 'text-gray-300 fill-gray-300'"
                                 >
+
                                     <path d="M12 2.5l2.94 5.95 6.56.95-4.75 4.63 1.12 6.54L12 17.48l-5.87 3.09 1.12-6.54L2.5 9.4l6.56-.95L12 2.5z"/>
+
                                 </svg>
+
                             </button>
+
                         @endfor
 
                     </div>
 
-                    <input type="hidden" name="rating_fasilitas" :value="rating">
+                    <input
+                        type="hidden"
+                        name="rating_fasilitas"
+                        :value="rating"
+                    >
 
                 </div>
 
@@ -135,25 +173,37 @@
                     <div class="flex gap-2">
 
                         @for ($i = 1; $i <= 5; $i++)
+
                             <button
                                 type="button"
                                 @click="rating = {{ $i }}"
                                 class="focus:outline-none"
                             >
+
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     class="w-9 h-9 transition"
-                                    :class="rating >= {{ $i }} ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-300'"
+                                    :class="rating >= {{ $i }}
+                                        ? 'text-yellow-400 fill-yellow-400'
+                                        : 'text-gray-300 fill-gray-300'"
                                 >
+
                                     <path d="M12 2.5l2.94 5.95 6.56.95-4.75 4.63 1.12 6.54L12 17.48l-5.87 3.09 1.12-6.54L2.5 9.4l6.56-.95L12 2.5z"/>
+
                                 </svg>
+
                             </button>
+
                         @endfor
 
                     </div>
 
-                    <input type="hidden" name="rating_kualitas" :value="rating">
+                    <input
+                        type="hidden"
+                        name="rating_kualitas"
+                        :value="rating"
+                    >
 
                 </div>
 

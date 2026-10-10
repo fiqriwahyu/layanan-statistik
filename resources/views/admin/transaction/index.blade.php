@@ -222,7 +222,7 @@
                                                 data-description="{{ $item->keterangan_pelayanan ?? '-' }}"
                                                 data-file="{{ $item->bukti_pelayanan ? asset('storage/' . $item->bukti_pelayanan) : '#' }}"
                                                 class="h-[34px] px-3 rounded-sm text-white text-[13px] bg-green-500 hover:bg-green-600">
-                                                Lihat Bukti
+                                                Sudah dilayani
                                             </button>
 
                                         @else
@@ -556,7 +556,7 @@
                             href="#"
                             target="_blank"
                             class="inline-block px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-[14px] rounded-sm">
-                            Lihat Bukti
+                            sudah dilayani
                         </a>
 
                     </div>

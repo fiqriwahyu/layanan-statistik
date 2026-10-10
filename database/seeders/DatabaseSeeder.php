@@ -211,45 +211,6 @@ class DatabaseSeeder extends Seeder
                 'education' => 'Sarjana',
             ],
 
-            [
-                'no_hp' => '081234567893',
-                'nama_lengkap' => 'Rina Marlina',
-                'jenis_kelamin' => 'Perempuan',
-                'email' => 'rina@example.com',
-                'alamat' => 'Jl. Jenderal Ahmad Yani, Kota Jambi',
-                'usia' => 28,
-                'nama_instansi' => 'Universitas Batanghari',
-                'nip_nim' => '2021123456',
-                'work' => 'Pelajar/Mahasiswa',
-                'education' => 'Pascasarjana',
-            ],
-
-            [
-                'no_hp' => '081234567894',
-                'nama_lengkap' => 'Dedi Irawan',
-                'jenis_kelamin' => 'Laki-laki',
-                'email' => 'dedi@example.com',
-                'alamat' => 'Jl. Lingkar Selatan, Kota Jambi',
-                'usia' => 40,
-                'nama_instansi' => 'Perusahaan Swasta',
-                'nip_nim' => '1985123456',
-                'work' => 'Swasta',
-                'education' => 'Diploma',
-            ],
-
-            [
-                'no_hp' => '081234567895',
-                'nama_lengkap' => 'Maya Sari',
-                'jenis_kelamin' => 'Perempuan',
-                'email' => 'maya@example.com',
-                'alamat' => 'Jl. HOS Cokroaminoto, Kota Jambi',
-                'usia' => 35,
-                'nama_instansi' => 'Usaha Mandiri',
-                'nip_nim' => '1991123456',
-                'work' => 'Wirausaha',
-                'education' => 'SMA/SMK',
-            ],
-
         ]);
 
 
@@ -414,33 +375,6 @@ class DatabaseSeeder extends Seeder
                     'service_id' => $serviceDokumen->id,
                     'purpose_id' => $purposeAdministrasi->id,
                     'data_diminta' => 'Permintaan dokumen statistik sosial Kota Jambi',
-                ],
-
-                [
-                    'customer_id' => $customerModels[3]->id,
-                    'media_id' => $mediaPst->id,
-                    'sub_categorie_id' => $subKependudukan->id,
-                    'service_id' => $servicePermintaan->id,
-                    'purpose_id' => $purposePenelitian->id,
-                    'data_diminta' => 'Data penduduk berdasarkan kelompok umur dan jenis kelamin',
-                ],
-
-                [
-                    'customer_id' => $customerModels[4]->id,
-                    'media_id' => $mediaWhatsApp->id,
-                    'sub_categorie_id' => $subEkonomi->id,
-                    'service_id' => $serviceMonitoring->id,
-                    'purpose_id' => $purposeBisnis->id,
-                    'data_diminta' => 'Data perkembangan ekonomi dan kegiatan usaha Kota Jambi',
-                ],
-
-                [
-                    'customer_id' => $customerModels[5]->id,
-                    'media_id' => $mediaPst->id,
-                    'sub_categorie_id' => $subSosial->id,
-                    'service_id' => $serviceKonsultasi->id,
-                    'purpose_id' => $purposeLainnya->id,
-                    'data_diminta' => 'Konsultasi mengenai data sosial Kota Jambi',
                 ],
 
             ];

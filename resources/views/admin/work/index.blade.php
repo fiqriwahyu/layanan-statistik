@@ -18,7 +18,7 @@
                            text-gray-600
                            text-center">
 
-                    Data pendidikan
+                    Data pekerjaan
 
                 </h2>
 

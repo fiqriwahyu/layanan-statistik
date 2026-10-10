@@ -17,6 +17,7 @@
         <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 md:p-8">
 
             <div class="text-center mb-8">
+
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
                     Penilaian Layanan
                 </h1>
@@ -24,6 +25,7 @@
                 <p class="text-gray-500 mt-2">
                     Masukkan nomor HP yang digunakan saat melakukan pelayanan.
                 </p>
+
             </div>
 
             @if (session('success'))
@@ -62,29 +64,33 @@
                     id="btnCek"
                     class="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
                 >
-                    Cek Transaksi
+                    Cek Layanan
                 </button>
 
             </form>
 
             <div id="loading" class="hidden text-center py-8">
+
                 <div class="inline-block w-8 h-8 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
 
                 <p class="text-gray-500 mt-3">
-                    Mencari transaksi...
+                    Mencari layanan...
                 </p>
+
             </div>
 
             <div id="hasil" class="hidden mt-8">
 
                 <div class="mb-4">
+
                     <h2 class="text-lg font-bold text-gray-800">
-                        Transaksi yang Dapat Dinilai
+                        Layanan yang Dapat Dinilai
                     </h2>
 
                     <p class="text-sm text-gray-500 mt-1">
-                        Pilih transaksi yang ingin Anda berikan penilaian.
+                        Pilih layanan yang ingin Anda berikan penilaian.
                     </p>
+
                 </div>
 
                 <div id="daftarTransaksi" class="space-y-3"></div>
@@ -105,28 +111,37 @@
         const errorNoHp = document.getElementById('errorNoHp');
 
         form.addEventListener('submit', async function (event) {
+
             event.preventDefault();
 
             const noHp = noHpInput.value.trim();
 
             errorNoHp.classList.add('hidden');
             errorNoHp.textContent = '';
+
             hasil.classList.add('hidden');
             daftarTransaksi.innerHTML = '';
 
             if (!noHp) {
+
                 errorNoHp.textContent = 'Nomor HP wajib diisi.';
                 errorNoHp.classList.remove('hidden');
+
                 noHpInput.focus();
+
                 return;
             }
 
             btnCek.disabled = true;
             btnCek.classList.add('opacity-60', 'cursor-not-allowed');
+
             loading.classList.remove('hidden');
 
             try {
-                const url = "{{ route('feedback.cek-nohp') }}?no_hp=" + encodeURIComponent(noHp);
+
+                const url =
+                    "{{ route('feedback.cek-nohp') }}?no_hp=" +
+                    encodeURIComponent(noHp);
 
                 const response = await fetch(url, {
                     method: 'GET',
@@ -138,10 +153,10 @@
 
                 const data = await response.json();
 
-                console.log('Response cek HP:', data);
-
                 if (!response.ok) {
-                    throw new Error(data.message || 'Terjadi kesalahan pada server.');
+                    throw new Error(
+                        data.message || 'Terjadi kesalahan pada server.'
+                    );
                 }
 
                 if (
@@ -149,10 +164,13 @@
                     !Array.isArray(data.transactions) ||
                     data.transactions.length === 0
                 ) {
+
                     errorNoHp.textContent =
-                        data.message || 'Tidak ada transaksi yang dapat dinilai.';
+                        data.message ||
+                        'Tidak ada layanan yang dapat dinilai.';
 
                     errorNoHp.classList.remove('hidden');
+
                     return;
                 }
 
@@ -169,15 +187,15 @@
                             <div class="min-w-0">
 
                                 <div class="font-semibold text-gray-800">
-                                    Transaksi #${transaction.id}
+                                    Layanan Statistik
                                 </div>
 
                                 <div class="text-sm text-gray-500 mt-1">
-                                    Tanggal: ${transaction.tanggal}
+                                    Tanggal layanan: ${transaction.tanggal}
                                 </div>
 
                                 <div class="text-sm text-gray-600 mt-1">
-                                    Data diminta: ${transaction.data_diminta}
+                                    Data yang diminta: ${transaction.data_diminta}
                                 </div>
 
                             </div>
@@ -193,6 +211,7 @@
                     `;
 
                     daftarTransaksi.appendChild(item);
+
                 });
 
                 hasil.classList.remove('hidden');
@@ -202,7 +221,8 @@
                 console.error('Error cek nomor HP:', error);
 
                 errorNoHp.textContent =
-                    error.message || 'Terjadi kesalahan saat mencari transaksi.';
+                    error.message ||
+                    'Terjadi kesalahan saat mencari layanan.';
 
                 errorNoHp.classList.remove('hidden');
 
@@ -211,8 +231,13 @@
                 loading.classList.add('hidden');
 
                 btnCek.disabled = false;
-                btnCek.classList.remove('opacity-60', 'cursor-not-allowed');
+
+                btnCek.classList.remove(
+                    'opacity-60',
+                    'cursor-not-allowed'
+                );
             }
+
         });
     </script>
 
