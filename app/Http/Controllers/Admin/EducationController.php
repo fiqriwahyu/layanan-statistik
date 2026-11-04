@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Education;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class EducationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $educations = Education::orderBy('created_at', 'desc')->paginate(15);
+        $request->validate(['search' => ['nullable', 'string', 'max:255']]);
+        $educations = Education::when($request->filled('search'), fn ($query) => $query->where('education_type', 'like', '%' . $request->search . '%'))->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         return view('admin.education.index', compact('educations'));
     }
@@ -53,7 +55,7 @@ class EducationController extends Controller
     public function destroy($id)
     {
         $education = Education::findOrFail($id);
-        $education->delete();
+        try { $education->delete(); } catch (QueryException) { return back()->with('error', 'Pendidikan masih digunakan dan tidak dapat dihapus.'); }
 
         return redirect()->route('admin.education.index')->with('success', 'Pendidikan berhasil dihapus.');
     }

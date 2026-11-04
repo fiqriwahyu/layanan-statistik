@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $services = Service::orderBy('created_at', 'desc')->paginate(15);
+        $request->validate(['search' => ['nullable', 'string', 'max:255']]);
+        $services = Service::when($request->filled('search'), fn ($query) => $query->where('service_type', 'like', '%' . $request->search . '%'))->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         return view('admin.service.index', compact('services'));
     }
@@ -53,7 +55,7 @@ class ServiceController extends Controller
     public function destroy($id)
     {
         $service = Service::findOrFail($id);
-        $service->delete();
+        try { $service->delete(); } catch (QueryException) { return back()->with('error', 'Layanan masih digunakan dan tidak dapat dihapus.'); }
 
         return redirect()->route('admin.service.index')->with('success', 'Service berhasil dihapus.');
     }

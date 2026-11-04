@@ -12,18 +12,6 @@
 
             <div class="px-3 sm:px-5 lg:px-7 py-4 sm:py-5">
 
-                @if (session('success'))
-                    <div class="mb-4 px-4 py-3 bg-green-100 border border-green-300 text-green-700 text-[14px] rounded-sm">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-4 px-4 py-3 bg-red-100 border border-red-300 text-red-700 text-[14px] rounded-sm">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
                 @if ($errors->any())
                     <div class="mb-4 px-4 py-3 bg-red-100 border border-red-300 text-red-700 text-[14px] rounded-sm">
                         <ul class="list-disc list-inside">
@@ -34,163 +22,139 @@
                     </div>
                 @endif
 
+                <div class="mb-4">
+                    <button type="button" onclick="toggleFilter()"
+                        class="w-full rounded-sm bg-blue-400 px-4 py-2 text-[14px] text-white hover:bg-blue-500 sm:w-auto">
+                        <span class="mr-1">&#9660;</span>
+                        Filter Tanggal
+                    </button>
+                </div>
+
+                {{-- FORM FILTER --}}
+                <form id="filterTanggal" method="GET" action="{{ route('admin.transaction.index') }}"
+                    class="mb-4 hidden rounded-sm border border-gray-300 bg-white p-3 sm:p-4">
+                    @if (request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+
+                    <div class="mb-3 w-full sm:w-64">
+                        <label for="status_transaksi" class="mb-1 block text-[14px] text-gray-600">Status layanan</label>
+                        <select id="status_transaksi" name="status_transaksi" class="h-[38px] w-full rounded-sm border border-gray-400 px-3 text-[14px] focus:border-blue-500 focus:outline-none">
+                            <option value="">Semua status</option>
+                            @foreach (['Belum dilayani', 'Sedang dilayani', 'Sudah dilayani'] as $status)
+                                <option value="{{ $status }}" @selected(request('status_transaksi') === $status)>{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4">
+                        <div class="w-full sm:w-auto">
+                            <label for="from" class="mb-1 block text-[14px] text-gray-600">Dari</label>
+                            <input type="date" id="from" name="from" value="{{ request('from') }}"
+                                class="h-[36px] w-full rounded-sm border border-gray-400 px-3 py-1 text-[14px] focus:border-blue-500 focus:outline-none sm:w-auto">
+                        </div>
+
+                        <div class="w-full sm:w-auto">
+                            <label for="to" class="mb-1 block text-[14px] text-gray-600">Sampai</label>
+                            <input type="date" id="to" name="to" value="{{ request('to') }}"
+                                class="h-[36px] w-full rounded-sm border border-gray-400 px-3 py-1 text-[14px] focus:border-blue-500 focus:outline-none sm:w-auto">
+                        </div>
+
+                        <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                            <button type="submit" class="w-full rounded-sm bg-blue-500 px-4 py-2 text-[14px] text-white hover:bg-blue-600 sm:w-auto">Filter</button>
+                            <a href="{{ route('admin.transaction.index') }}" class="w-full rounded-sm bg-gray-300 px-4 py-2 text-center text-[14px] text-gray-700 hover:bg-gray-400 sm:w-auto">Reset</a>
+                        </div>
+                    </div>
+                </form>
+
                 {{-- TOOLBAR --}}
-<div class="mb-4">
+                <div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    {{-- DOWNLOAD --}}
+                    <div class="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap lg:w-auto">
+                        <a href="{{ route('admin.transaction.export.pdf', request()->all()) }}"
+                            class="w-full rounded-sm bg-red-500 px-4 py-2 text-center text-[14px] text-white hover:bg-red-600 sm:w-auto">
+                            PDF Data
+                        </a>
 
-    {{-- FILTER --}}
-    <div class="mb-3">
-        <button type="button"
-            onclick="toggleFilter()"
-            class="inline-flex items-center gap-2 bg-blue-400 hover:bg-blue-500 text-white text-[14px] px-5 py-2.5 rounded-sm transition">
-            <span class="text-[13px]">▼</span>
-            Filter Tanggal
-        </button>
-    </div>
+                        <a href="{{ route('admin.transaction.export.excel', array_merge(request()->all(), ['format' => 'xlsx'])) }}"
+                            class="w-full rounded-sm bg-blue-600 px-4 py-2 text-center text-[14px] text-white hover:bg-blue-700 sm:w-auto">
+                            Excel Data
+                        </a>
 
-    {{-- DOWNLOAD --}}
-    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('admin.transaction.export.excel', array_merge(request()->all(), ['format' => 'csv'])) }}"
+                            class="w-full rounded-sm bg-green-500 px-4 py-2 text-center text-[14px] text-white hover:bg-green-600 sm:w-auto">
+                            CSV Data
+                        </a>
+                    </div>
 
-        <a href="{{ route('admin.transaction.export.pdf', request()->all()) }}"
-            class="inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white text-[14px] px-5 py-2.5 rounded-sm transition">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
-            </svg>
-            PDF Data
-        </a>
+                    {{-- SEARCH --}}
+                    <form method="GET" action="{{ route('admin.transaction.index') }}"
+                        class="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 lg:w-auto">
+                        @foreach (['status_transaksi', 'from', 'to'] as $filter)
+                            @if (request()->filled($filter))
+                                <input type="hidden" name="{{ $filter }}" value="{{ request($filter) }}">
+                            @endif
+                        @endforeach
 
-        <a href="{{ route('admin.transaction.export.excel', array_merge(request()->all(), ['format' => 'xlsx'])) }}"
-            class="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-[14px] px-5 py-2.5 rounded-sm transition">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
-            </svg>
-            Excel Data
-        </a>
+                        <label for="search" class="whitespace-nowrap text-[15px] text-gray-600 sm:text-[16px]">
+                            Pencarian :
+                        </label>
 
-        <a href="{{ route('admin.transaction.export.excel', array_merge(request()->all(), ['format' => 'csv'])) }}"
-            class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-[14px] px-5 py-2.5 rounded-sm transition">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2">
-                <path stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
-            </svg>
-            CSV Data
-        </a>
+                        <input type="text" id="search" name="search" value="{{ request('search') }}"
+                            placeholder="Nama atau jenis pelayanan"
+                            class="h-[36px] w-full rounded-sm border border-gray-500 px-3 text-[15px] text-gray-600 focus:border-gray-700 focus:outline-none sm:w-[180px] sm:text-[16px]"
+                            autocomplete="off">
 
-    </div>
-
-</div>
-
-{{-- FILTER TANGGAL --}}
-<form id="filterTanggal"
-    method="GET"
-    action="{{ route('admin.transaction.index') }}"
-    class="hidden bg-white border border-gray-300 rounded-sm p-3 sm:p-4 mb-4">
-
-    @if (request('search'))
-        <input type="hidden" name="search" value="{{ request('search') }}">
-    @endif
-
-    <div class="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4">
-
-        <div class="w-full sm:w-auto">
-            <label for="from"
-                class="block text-[14px] text-gray-600 mb-1">
-                Dari
-            </label>
-
-            <input type="date"
-                id="from"
-                name="from"
-                value="{{ request('from') }}"
-                class="w-full sm:w-[170px] h-[36px] border border-gray-400 px-3 py-1 text-[14px] rounded-sm focus:outline-none focus:border-blue-500">
-        </div>
-
-        <div class="w-full sm:w-auto">
-            <label for="to"
-                class="block text-[14px] text-gray-600 mb-1">
-                Sampai
-            </label>
-
-            <input type="date"
-                id="to"
-                name="to"
-                value="{{ request('to') }}"
-                class="w-full sm:w-[170px] h-[36px] border border-gray-400 px-3 py-1 text-[14px] rounded-sm focus:outline-none focus:border-blue-500">
-        </div>
-
-        <div class="flex gap-2 w-full sm:w-auto">
-
-            <button type="submit"
-                class="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white text-[14px] px-4 py-2 rounded-sm">
-                Filter
-            </button>
-
-            <a href="{{ route('admin.transaction.index') }}"
-                class="flex-1 sm:flex-none text-center bg-gray-300 hover:bg-gray-400 text-gray-700 text-[14px] px-4 py-2 rounded-sm">
-                Reset
-            </a>
-
-        </div>
-
-    </div>
-</form>
+                        <div class="flex w-full gap-2 sm:w-auto">
+                            <button type="submit"
+                                class="w-full rounded-sm bg-blue-500 px-4 py-2 text-[14px] text-white hover:bg-blue-600 sm:w-auto">
+                                Cari
+                            </button>
+                            <a href="{{ route('admin.transaction.index') }}"
+                                class="w-full rounded-sm bg-gray-300 px-4 py-2 text-center text-[14px] text-gray-700 hover:bg-gray-400 sm:w-auto">
+                                Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
 
                 {{-- TABEL --}}
                 <div class="w-full overflow-x-auto">
 
-                    <table class="w-full min-w-[1250px] border-collapse text-[15px]">
+                    <table class="w-full min-w-[1250px] border-collapse text-[16px]">
 
                         <thead>
                             <tr class="bg-slate-600 text-white">
 
-                                <th class="w-[60px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] w-[60px] whitespace-nowrap border border-gray-400 px-3 text-center align-middle font-normal">
                                     No
                                 </th>
 
-                                <th class="min-w-[180px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] min-w-[180px] whitespace-nowrap border border-gray-400 px-3 text-left align-middle font-normal">
                                     Nama
                                 </th>
 
-                                <th class="min-w-[170px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] min-w-[170px] whitespace-nowrap border border-gray-400 px-3 text-center align-middle font-normal">
                                     Status Transaksi
                                 </th>
 
-                                <th class="min-w-[180px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] min-w-[180px] whitespace-nowrap border border-gray-400 px-3 text-center align-middle font-normal">
                                     Penilaian
                                 </th>
 
-                                <th class="min-w-[250px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] min-w-[250px] whitespace-nowrap border border-gray-400 px-3 text-left align-middle font-normal">
                                     Saran
                                 </th>
 
-                                <th class="min-w-[170px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] min-w-[170px] whitespace-nowrap border border-gray-400 px-3 text-center align-middle font-normal">
                                     Tanggal
                                 </th>
 
-                                <th class="min-w-[160px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] min-w-[160px] whitespace-nowrap border border-gray-400 px-3 text-center align-middle font-normal">
                                     Status Penilaian
                                 </th>
 
-                                <th class="w-[130px] h-[45px] border border-gray-300 px-3 text-center align-middle">
+                                <th class="h-[43px] w-[130px] whitespace-nowrap border border-gray-400 px-3 text-center align-middle font-normal">
                                     Aksi
                                 </th>
 
@@ -207,7 +171,7 @@
                                         {{ $transactions->firstItem() + $key }}
                                     </td>
 
-                                    <td class="h-[70px] border border-gray-300 px-3 text-center align-middle break-words">
+                                    <td class="h-[70px] border border-gray-300 px-3 align-middle break-words">
                                         {{ $item->customer->nama_lengkap ?? '-' }}
                                     </td>
 
@@ -220,18 +184,22 @@
                                                 data-date="{{ $item->dilayani_pada ? $item->dilayani_pada->format('d-m-Y H:i:s') : '-' }}"
                                                 data-admin="{{ $item->dilayaniOleh->name ?? '-' }}"
                                                 data-description="{{ $item->keterangan_pelayanan ?? '-' }}"
-                                                data-file="{{ $item->bukti_pelayanan ? asset('storage/' . $item->bukti_pelayanan) : '#' }}"
+                                                data-file="{{ $item->bukti_pelayanan ? route('admin.transaction.proof', $item) : '' }}"
                                                 class="h-[34px] px-3 rounded-sm text-white text-[13px] bg-green-500 hover:bg-green-600">
                                                 Sudah dilayani
                                             </button>
 
+                                        @elseif ($item->status_transaksi === 'Sedang dilayani')
+
+                                            <span class="inline-flex rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-[13px] font-semibold text-amber-900">Sedang dilayani</span>
+                                            <p class="mt-1 text-xs text-gray-600">{{ $item->status_updated_at?->format('d-m-Y H:i') ?? '-' }}</p>
+                                            <button type="button" data-id="{{ $item->id }}" data-status="{{ $item->status_transaksi }}" data-version="{{ $item->status_version }}" onclick="openServiceModal(this)" class="mt-1 text-xs font-semibold text-[#385683] underline">Ubah status</button>
+
                                         @else
 
-                                            <button type="button"
-                                                onclick="openServiceModal({{ $item->id }})"
-                                                class="h-[34px] px-3 rounded-sm text-white text-[13px] bg-red-500 hover:bg-red-600">
-                                                Belum dilayani
-                                            </button>
+                                            <span class="inline-flex rounded-full border border-gray-300 bg-gray-100 px-3 py-1 text-[13px] font-semibold text-gray-800">{{ $item->status_transaksi }}</span>
+                                            <p class="mt-1 text-xs text-gray-600">{{ $item->status_updated_at?->format('d-m-Y H:i') ?? '-' }}</p>
+                                            <button type="button" data-id="{{ $item->id }}" data-status="{{ $item->status_transaksi }}" data-version="{{ $item->status_version }}" onclick="openServiceModal(this)" class="mt-1 text-xs font-semibold text-[#385683] underline">Ubah status</button>
 
                                         @endif
 
@@ -253,7 +221,7 @@
 
                                     </td>
 
-                                    <td class="h-[70px] border border-gray-300 px-3 text-center align-middle break-words">
+                                    <td class="h-[70px] border border-gray-300 px-3 align-middle break-words">
                                         {{ $item->feedback->saran_kritik ?? '-' }}
                                     </td>
 
@@ -408,7 +376,7 @@
             <div class="flex items-center justify-between px-5 py-4 border-b border-gray-300 bg-gray-100">
 
                 <h3 class="text-[18px] text-gray-700 font-medium">
-                    Selesaikan Layanan
+                    Perbarui Status Layanan
                 </h3>
 
                 <button type="button"
@@ -423,10 +391,18 @@
 
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="status_version" id="statusVersion">
 
                 <div class="px-5 py-5">
 
                     <div class="grid grid-cols-[170px_1fr] gap-x-4 gap-y-4 items-center">
+
+                        <label for="statusTransaksi" class="text-[14px] text-gray-600">Status layanan</label>
+                        <select id="statusTransaksi" name="status_transaksi" required class="w-full rounded-sm border border-gray-400 px-3 py-2 text-[14px] focus:border-blue-500 focus:outline-none">
+                            <option value="Belum dilayani">Belum dilayani</option>
+                            <option value="Sedang dilayani">Sedang dilayani</option>
+                            <option value="Sudah dilayani">Sudah dilayani</option>
+                        </select>
 
                         <label class="text-[14px] text-gray-600">
                             Tanggal Dilayani
@@ -436,16 +412,16 @@
                             Dicatat otomatis saat layanan diselesaikan
                         </div>
 
-                        <label class="text-[14px] text-gray-600">
+                        <label id="proofLabel" class="text-[14px] text-gray-600">
                             Bukti Pelayanan <span class="text-red-500">*</span>
                         </label>
 
-                        <div>
+                        <div id="proofFields">
 
                             <input type="file"
                                 name="bukti_pelayanan"
                                 accept=".pdf,.jpg,.jpeg,.png"
-                                required
+                                id="serviceProofInput"
                                 class="w-full border border-gray-400 rounded-sm px-3 py-2 text-[14px] text-gray-600">
 
                             <p class="mt-1 text-[12px] text-gray-500">
@@ -477,7 +453,7 @@
 
                     <button type="submit"
                         class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-[14px] rounded-sm">
-                        Simpan & Selesaikan
+                        Simpan Status
                     </button>
 
                 </div>
@@ -584,11 +560,27 @@
             document.getElementById('filterTanggal').classList.toggle('hidden');
         }
 
-        function openServiceModal(id) {
+        const serviceStatusSelect = document.getElementById('statusTransaksi');
+        const serviceProofFields = document.getElementById('proofFields');
+        const serviceProofInput = document.getElementById('serviceProofInput');
+
+        function updateProofRequirement() {
+            const isComplete = serviceStatusSelect.value === 'Sudah dilayani';
+            serviceProofInput.required = isComplete;
+            serviceProofFields.classList.toggle('hidden', !isComplete);
+            document.getElementById('proofLabel').classList.toggle('hidden', !isComplete);
+        }
+
+        serviceStatusSelect.addEventListener('change', updateProofRequirement);
+
+        function openServiceModal(button) {
             const modal = document.getElementById('serviceModal');
             const form = document.getElementById('serviceForm');
 
-            form.action = "{{ url('/admin/transaction') }}/" + id + "/status";
+            form.action = "{{ url('/admin/transaction') }}/" + button.dataset.id + "/status";
+            document.getElementById('statusVersion').value = button.dataset.version;
+            serviceStatusSelect.value = button.dataset.status;
+            updateProofRequirement();
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -601,6 +593,8 @@
             modal.classList.remove('flex');
 
             document.getElementById('serviceForm').reset();
+            serviceProofFields.classList.remove('hidden');
+            document.getElementById('proofLabel').classList.remove('hidden');
         }
 
         function openProofModal(button) {

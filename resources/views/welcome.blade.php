@@ -27,18 +27,10 @@
 
 <body class="text-[#1b1b18]">
 
-    @if (session('success'))
-        <div class="max-w-7xl mx-auto px-6 mt-6">
-            <div class="bg-green-100 text-green-700 p-4 rounded">
-                {{ session('success') }}
-            </div>
-        </div>
-    @endif
-
     {{-- NAVBAR --}}
     <nav class="bg-[#385683] border-b border-white/20">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex justify-between h-16 items-center">
+            <div class="flex min-h-16 flex-wrap items-center justify-between gap-3 py-2">
 
                 {{-- KIRI: Logo + Nama --}}
                 <a href="#beranda" class="flex items-center gap-3 text-white">
@@ -53,11 +45,12 @@
                 </a>
 
                 {{-- KANAN: Menu Guest --}}
-                <div class="flex items-center gap-8 text-sm font-medium text-white">
+                <div class="flex flex-wrap items-center justify-end gap-3 text-sm font-medium text-white sm:gap-6">
                     <a href="#beranda" class="hover:text-indigo-300 transition">Beranda</a>
                     <a href="#tentang" class="hover:text-indigo-300 transition">Tentang Kami</a>
                     <a href="#layanan" class="hover:text-indigo-300 transition">Layanan Kami</a>
                     <a href="#penilaian" class="hover:text-indigo-300 transition">Penilaian</a>
+                    <a href="{{ route('service-status.index') }}" class="rounded bg-white/10 px-3 py-2 hover:bg-white/20 transition">Cek Status Layanan</a>
                     <a href="#kontak" class="hover:text-indigo-300 transition">Kontak</a>
                 </div>
 
@@ -84,10 +77,10 @@
                 Melayani dengan profesional
             </p>
 
-            <a href="{{ route('form-tamu') }}"
-                class="inline-flex px-8 py-3 bg-blue-600 text-white rounded-lg">
-                Form Tamu
-            </a>
+            <div class="flex flex-col justify-center gap-3 sm:flex-row">
+                <a href="{{ route('form-tamu') }}" class="inline-flex justify-center rounded-lg bg-blue-600 px-8 py-3 text-white hover:bg-blue-700">Form Tamu</a>
+                <a href="{{ route('service-status.index') }}" class="inline-flex justify-center rounded-lg border border-white px-8 py-3 font-semibold text-white hover:bg-white/10">Cek Status Layanan</a>
+            </div>
 
         </div>
     </section>
@@ -469,12 +462,7 @@
 
         <div class="absolute inset-0 bg-[#6D7F99]/80"></div>
 
-        {{-- ALPINE WRAPPER --}}
-        <div
-            x-data="penilaianModal()"
-            x-cloak
-            class="relative max-w-7xl mx-auto px-6 py-32 text-center text-white"
-        >
+        <div class="relative max-w-7xl mx-auto px-6 py-32 text-center text-white">
 
             <h1 class="text-4xl md:text-5xl font-bold mb-6">
                 Berikan Penilaian
@@ -482,194 +470,16 @@
 
             <p class="text-lg md:text-xl text-white/90 mb-12">
                 Anda dapat memberikan Masukan dan Saran melalui tombol penilaian dibawah ini.
-                Masukan dan Saran yang diberikan akan dilindungi dan kerahasiaan identitas Anda
-                terjaga dengan baik. Berikan penilaian secara bebas tanpa paksaan.
+                Feedback dapat diberikan pada semua tahap status layanan dengan tautan rahasia yang diberikan setelah pengajuan. Tautan membuktikan penguasaan tautan, bukan verifikasi identitas atau kepemilikan nomor HP.
             </p>
 
             {{-- TOMBOL --}}
             <a
-                href="#"
-                @click.prevent="open = true"
+                href="{{ route('feedback.index') }}"
                 class="inline-flex items-center px-8 py-3 bg-white text-[#385683] font-semibold rounded-lg shadow hover:bg-gray-100 transition"
             >
                 Beri Nilai
             </a>
-
-            {{-- MODAL CEK NO HP --}}
-            <div
-                x-show="open"
-                x-cloak
-                class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4"
-            >
-
-                <div class="bg-white w-full max-w-md rounded-xl shadow-lg p-6 text-left">
-
-                    <h2 class="text-lg font-semibold mb-4 text-[#385683]">
-                        Masukkan No HP
-                    </h2>
-
-                    <input
-                        x-model="no_hp"
-                        @keydown.enter.prevent="cek"
-                        type="text"
-                        inputmode="numeric"
-                        class="w-full border rounded px-3 py-2 mb-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="08123456789"
-                    >
-
-                    <p
-                        x-show="error"
-                        x-cloak
-                        class="text-red-600 text-sm mb-3"
-                        x-text="error"
-                    ></p>
-
-                    <div class="flex justify-end gap-2">
-
-                        <button
-                            type="button"
-                            @click="open=false"
-                            class="px-4 py-2 bg-gray-300 rounded"
-                        >
-                            Batal
-                        </button>
-
-                        <button
-                            type="button"
-                            @click="cek"
-                            :disabled="loading"
-                            class="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-60"
-                        >
-                            <span x-show="!loading">Lanjut</span>
-                            <span x-show="loading">Mengecek...</span>
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {{-- MODAL DAFTAR LAYANAN --}}
-            <div
-                x-show="showTransactions"
-                x-cloak
-                class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] px-4"
-            >
-
-                <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6 text-left">
-
-                    <div class="flex items-center justify-between mb-5">
-
-                        <div>
-
-                            <h2 class="text-lg font-semibold text-[#385683]">
-                                Layanan yang Dapat Dinilai
-                            </h2>
-
-                            <p class="text-sm text-gray-500 mt-1">
-                                Pilih layanan yang ingin Anda nilai.
-                            </p>
-
-                        </div>
-
-                        <button
-                            type="button"
-                            @click="showTransactions=false"
-                            class="text-gray-400 hover:text-gray-700 text-2xl leading-none"
-                        >
-                            &times;
-                        </button>
-
-                    </div>
-
-                    {{-- MODAL DAFTAR LAYANAN --}}
-<div
-    x-show="showTransactions"
-    x-cloak
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] px-4"
->
-    <div class="bg-white w-full max-w-lg rounded-xl shadow-lg p-6 text-left">
-
-        <div class="flex items-center justify-between mb-5">
-
-            <div>
-                <h2 class="text-lg font-semibold text-[#385683]">
-                    Layanan yang Dapat Dinilai
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Pilih layanan yang ingin Anda nilai.
-                </p>
-            </div>
-
-            <button
-                type="button"
-                @click="showTransactions=false"
-                class="text-gray-400 hover:text-gray-700 text-2xl leading-none"
-            >
-                &times;
-            </button>
-
-        </div>
-
-        <div class="max-h-[400px] overflow-y-auto space-y-3">
-
-            <template
-                x-for="transaction in transactions"
-                :key="transaction.id"
-            >
-
-                <div class="border border-gray-200 rounded-lg p-4">
-
-                    <div class="font-semibold text-gray-800 text-base">
-                        Layanan Statistik
-                    </div>
-
-                    <div class="text-sm text-gray-500 mt-1">
-                        Tanggal:
-                        <span x-text="transaction.tanggal"></span>
-                    </div>
-
-                    <div class="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-
-                        <div class="text-xs font-semibold text-gray-500 uppercase mb-1">
-                            Kebutuhan Data
-                        </div>
-
-                        <div class="text-sm font-semibold text-gray-800">
-                            <span x-text="transaction.kebutuhan_data"></span>
-                        </div>
-
-                        <div class="text-xs font-semibold text-gray-500 uppercase mt-3 mb-1">
-                            Informasi Data yang Diminta
-                        </div>
-
-                        <div class="text-sm text-gray-700 leading-relaxed">
-                            <span x-text="transaction.data_diminta"></span>
-                        </div>
-
-                    </div>
-
-                    <a
-                        :href="'{{ url('/feedback') }}/' + transaction.id"
-                        class="inline-flex items-center justify-center mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg"
-                    >
-                        Beri Penilaian
-                    </a>
-
-                </div>
-
-            </template>
-
-        </div>
-
-    </div>
-</div>
-
-                </div>
-
-            </div>
 
         </div>
 
@@ -816,100 +626,6 @@
     });
 </script>
 
-<script>
-    function penilaianModal() {
-
-        return {
-
-            open: false,
-            showTransactions: false,
-            loading: false,
-            error: '',
-            no_hp: '',
-            transactions: [],
-
-            async cek() {
-
-                this.error = '';
-
-                const noHp = this.no_hp.trim();
-
-                if (!noHp) {
-
-                    this.error = 'Silakan masukkan nomor HP.';
-
-                    return;
-                }
-
-                this.loading = true;
-
-                try {
-
-                    const url =
-                        "{{ route('feedback.cek-nohp') }}?no_hp=" +
-                        encodeURIComponent(noHp);
-
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    const data = await response.json();
-
-                    console.log('Response cek HP:', data);
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            data.message ||
-                            'Terjadi kesalahan pada server.'
-                        );
-
-                    }
-
-                    if (
-                        data.found === true &&
-                        Array.isArray(data.transactions) &&
-                        data.transactions.length > 0
-                    ) {
-
-                        this.transactions = data.transactions;
-                        this.open = false;
-                        this.showTransactions = true;
-                        this.no_hp = '';
-
-                        return;
-                    }
-
-                    this.error =
-                        data.message ||
-                        'Tidak ada layanan yang dapat dinilai.';
-
-                } catch (error) {
-
-                    console.error(
-                        'Error cek nomor HP:',
-                        error
-                    );
-
-                    this.error =
-                        error.message ||
-                        'Terjadi kesalahan saat mengecek nomor HP.';
-
-                } finally {
-
-                    this.loading = false;
-
-                }
-
-            }
-
-        }
-
-    }
-</script>
-
+<x-flash-modal />
+</body>
 </html>

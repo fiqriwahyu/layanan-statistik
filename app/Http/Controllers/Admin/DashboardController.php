@@ -19,6 +19,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $this->validateDateFilters($request);
         $from = $request->from;
         $to = $request->to;
 
@@ -43,6 +44,10 @@ class DashboardController extends Controller
 
         $sudahDilayani = (clone $transactionQuery)
             ->where('status_transaksi', 'Sudah dilayani')
+            ->count();
+
+        $sedangDilayani = (clone $transactionQuery)
+            ->where('status_transaksi', 'Sedang dilayani')
             ->count();
 
         $pendidikan = Education::withCount([
@@ -120,10 +125,22 @@ class DashboardController extends Controller
         $chartLabelsPurpose = $tujuan->pluck('purpose_type')->values();
         $chartDataPurpose = $tujuan->pluck('transactions_count')->values();
 
+        $latestTransactions = (clone $transactionQuery)
+            ->with([
+                'service:id,service_type',
+                'media:id,media_type',
+            ])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
+
         return view('admin.dashboard', compact(
             'totalCustomer',
             'belumDilayani',
             'sudahDilayani',
+            'sedangDilayani',
+            'latestTransactions',
             'chartLabelsEducation',
             'chartDataEducation',
             'chartLabelsWork',
@@ -141,6 +158,7 @@ class DashboardController extends Controller
 
     public function exportPDF(Request $request)
     {
+        $this->validateDateFilters($request);
         $from = $request->from;
         $to = $request->to;
 
@@ -166,6 +184,10 @@ class DashboardController extends Controller
 
         $sudahDilayani = (clone $transactionQuery)
             ->where('status_transaksi', 'Sudah dilayani')
+            ->count();
+
+        $sedangDilayani = (clone $transactionQuery)
+            ->where('status_transaksi', 'Sedang dilayani')
             ->count();
 
         $pendidikan = Education::withCount([
@@ -242,6 +264,7 @@ class DashboardController extends Controller
             'totalPengunjung' => $totalPengunjung,
             'totalTransaksi' => $totalTransaksi,
             'belumDilayani' => $belumDilayani,
+            'sedangDilayani' => $sedangDilayani,
             'sudahDilayani' => $sudahDilayani,
             'pendidikan' => $pendidikan,
             'pekerjaan' => $pekerjaan,
@@ -260,7 +283,9 @@ class DashboardController extends Controller
 
     public function exportExcel(Request $request)
 {
+    $this->validateDateFilters($request);
     $format = $request->query('format', 'xlsx');
+    abort_unless(in_array($format, ['csv', 'xlsx'], true), 422, 'Format ekspor tidak didukung.');
 
     $export = new DashboardExport(
         $request->query('from'),
@@ -281,4 +306,12 @@ class DashboardController extends Controller
         \Maatwebsite\Excel\Excel::XLSX
     );
 }
+
+    private function validateDateFilters(Request $request): void
+    {
+        $request->validate([
+            'from' => ['nullable', 'date_format:Y-m-d'],
+            'to' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
+        ]);
+    }
 }

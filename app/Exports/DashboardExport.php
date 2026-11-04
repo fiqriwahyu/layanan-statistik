@@ -52,6 +52,7 @@ class DashboardExport implements FromArray, WithHeadings
         $rows[] = [$no++, 'Ringkasan', 'Total Pengunjung', $customerQuery->count()];
         $rows[] = [$no++, 'Ringkasan', 'Total Transaksi', $transactionQuery->count()];
         $rows[] = [$no++, 'Ringkasan', 'Belum Dilayani', (clone $transactionQuery)->where('status_transaksi', 'Belum dilayani')->count()];
+        $rows[] = [$no++, 'Ringkasan', 'Sedang Dilayani', (clone $transactionQuery)->where('status_transaksi', 'Sedang dilayani')->count()];
         $rows[] = [$no++, 'Ringkasan', 'Sudah Dilayani', (clone $transactionQuery)->where('status_transaksi', 'Sudah dilayani')->count()];
 
         $pendidikan = Education::withCount([

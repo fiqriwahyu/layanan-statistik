@@ -28,18 +28,6 @@
 
             </div>
 
-            @if (session('success'))
-                <div class="mb-5 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="mb-5 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
-                    {{ session('error') }}
-                </div>
-            @endif
-
             <form id="cekNoHpForm" class="space-y-5">
 
                 <div>
@@ -120,7 +108,7 @@
             errorNoHp.textContent = '';
 
             hasil.classList.add('hidden');
-            daftarTransaksi.innerHTML = '';
+            daftarTransaksi.replaceChildren();
 
             if (!noHp) {
 
@@ -181,34 +169,19 @@
                     item.className =
                         'border border-gray-200 rounded-lg p-4 hover:border-blue-400 hover:bg-blue-50 transition';
 
-                    item.innerHTML = `
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                            <div class="min-w-0">
-
-                                <div class="font-semibold text-gray-800">
-                                    Layanan Statistik
-                                </div>
-
-                                <div class="text-sm text-gray-500 mt-1">
-                                    Tanggal layanan: ${transaction.tanggal}
-                                </div>
-
-                                <div class="text-sm text-gray-600 mt-1">
-                                    Data yang diminta: ${transaction.data_diminta}
-                                </div>
-
-                            </div>
-
-                            <a
-                                href="{{ url('/feedback') }}/${transaction.id}"
-                                class="shrink-0 inline-flex items-center justify-center h-10 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold"
-                            >
-                                Beri Penilaian
-                            </a>
-
-                        </div>
-                    `;
+                    const content = document.createElement('div');
+                    content.className = 'min-w-0';
+                    const heading = document.createElement('div');
+                    heading.className = 'font-semibold text-gray-800';
+                    heading.textContent = 'Layanan Statistik';
+                    const date = document.createElement('div');
+                    date.className = 'text-sm text-gray-500 mt-1';
+                    date.textContent = `Tanggal layanan: ${transaction.tanggal ?? '-'}`;
+                    const description = document.createElement('div');
+                    description.className = 'text-sm text-gray-600 mt-1';
+                    description.textContent = `Data yang diminta: ${transaction.data_diminta ?? '-'}`;
+                    content.append(heading, date, description);
+                    item.appendChild(content);
 
                     daftarTransaksi.appendChild(item);
 
@@ -241,6 +214,7 @@
         });
     </script>
 
+<x-flash-modal />
 </body>
 
 </html>

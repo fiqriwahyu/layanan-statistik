@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
 
     <title>Penilaian Layanan</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen">
@@ -20,7 +20,9 @@
 
             <div class="text-center mb-8">
 
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+                <p class="mb-2 text-sm font-semibold uppercase tracking-wide text-[#385683]">BPS Kota Jambi</p>
+
+                <h1 class="text-2xl md:text-3xl font-bold text-[#385683]">
                     Penilaian Layanan
                 </h1>
 
@@ -30,7 +32,7 @@
 
             </div>
 
-            <div class="mb-6 p-4 rounded-lg bg-blue-50 border border-blue-200">
+            <div class="mb-6 p-4 rounded-lg bg-[#385683]/5 border border-[#385683]/20">
 
                 <div class="font-semibold text-gray-800">
                     Layanan Statistik
@@ -65,18 +67,12 @@
             @endif
 
             <form
-                action="{{ route('feedback.store') }}"
+                action="{{ route('feedback.store', $token) }}"
                 method="POST"
                 class="space-y-7"
             >
 
                 @csrf
-
-                <input
-                    type="hidden"
-                    name="transaction_id"
-                    value="{{ $transaction->id }}"
-                >
 
                 <div x-data="{ rating: {{ old('rating_pelayanan', 0) }} }">
 
@@ -91,7 +87,9 @@
                             <button
                                 type="button"
                                 @click="rating = {{ $i }}"
-                                class="focus:outline-none"
+                                aria-label="Nilai pelayanan {{ $i }} dari 5"
+                                :aria-pressed="rating === {{ $i }}"
+                                class="rounded focus:outline-none focus:ring-2 focus:ring-[#385683] focus:ring-offset-2"
                             >
 
                                 <svg
@@ -134,7 +132,9 @@
                             <button
                                 type="button"
                                 @click="rating = {{ $i }}"
-                                class="focus:outline-none"
+                                aria-label="Nilai fasilitas {{ $i }} dari 5"
+                                :aria-pressed="rating === {{ $i }}"
+                                class="rounded focus:outline-none focus:ring-2 focus:ring-[#385683] focus:ring-offset-2"
                             >
 
                                 <svg
@@ -177,7 +177,9 @@
                             <button
                                 type="button"
                                 @click="rating = {{ $i }}"
-                                class="focus:outline-none"
+                                aria-label="Nilai kualitas layanan {{ $i }} dari 5"
+                                :aria-pressed="rating === {{ $i }}"
+                                class="rounded focus:outline-none focus:ring-2 focus:ring-[#385683] focus:ring-offset-2"
                             >
 
                                 <svg
@@ -222,7 +224,7 @@
                         rows="5"
                         maxlength="2000"
                         placeholder="Tuliskan saran atau kritik Anda..."
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#385683] focus:border-[#385683]"
                     >{{ old('saran_kritik') }}</textarea>
 
                 </div>
@@ -238,7 +240,7 @@
 
                     <button
                         type="submit"
-                        class="w-full md:w-1/2 h-12 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                        class="w-full md:w-1/2 h-12 rounded-lg bg-[#385683] hover:bg-[#2f496f] text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#385683] focus:ring-offset-2"
                     >
                         Kirim Penilaian
                     </button>
@@ -251,6 +253,7 @@
 
     </div>
 
+<x-flash-modal />
 </body>
 
 </html>

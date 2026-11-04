@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class MediaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $medias = Media::orderBy('created_at', 'desc')->paginate(15);
+        $request->validate(['search' => ['nullable', 'string', 'max:255']]);
+        $medias = Media::when($request->filled('search'), fn ($query) => $query->where('media_type', 'like', '%' . $request->search . '%'))->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         return view('admin.media.index', compact('medias'));
     }
@@ -53,7 +55,7 @@ class MediaController extends Controller
     public function destroy($id)
     {
         $media = Media::findOrFail($id);
-        $media->delete();
+        try { $media->delete(); } catch (QueryException) { return back()->with('error', 'Media masih digunakan dan tidak dapat dihapus.'); }
 
         return redirect()->route('admin.media.index')->with('success', 'Media berhasil dihapus.');
     }

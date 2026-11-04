@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="2150" viewBox="0 0 3000 2150" role="img" aria-labelledby="title desc">
+<title id="title">UML Class Diagram Sistem Informasi Layanan Statistik BPS Kota Jambi</title><desc id="desc">Model Laravel dengan operasi sistem yang dipetakan ke controller dan method relasi Eloquent.</desc><defs><style><![CDATA[text{font-family:Arial,Helvetica,sans-serif;fill:#111}.title{font-size:38px;font-weight:700}.subtitle{font-size:20px}.group{font-size:16px;font-weight:bold;letter-spacing:1px}.cname{font-size:24px;font-weight:bold}.symbol{font-size:16px;font-weight:bold}.attr{font-size:17px}.op{font-size:15.5px}.mult{font-size:16px;font-weight:bold;paint-order:stroke;stroke:#fff;stroke-width:6px;stroke-linejoin:round}.note{font-size:15px}.box{fill:#fff;stroke:#111;stroke-width:1.8}.rule{stroke:#111;stroke-width:1.5}.rel{fill:none;stroke:#111;stroke-width:1.8;stroke-linecap:round]]></style></defs><rect width="3000" height="2150" fill="#fff"/>
+<text class="title" x="60" y="60">UML Class Diagram Sistem Informasi Layanan Statistik</text><text class="subtitle" x="60" y="96">BPS Kota Jambi | Atribut skema, relasi, dan operasi sistem yang diverifikasi</text><text class="group" x="650" y="122">REFERENSI LAYANAN</text><text class="group" x="60" y="525">PROFIL PEMOHON</text><text class="group" x="2240" y="525">FEEDBACK DAN AKUN</text><text class="group" x="60" y="1525">KLASIFIKASI LAYANAN</text>
+<path class='rel' d='M 560 620 L 650 740'/>
+<path class='rel' d='M 560 1100 L 650 1100'/>
+<path class='rel' d='M 1250 850 L 1370 850'/>
+<path class='rel' d='M 1150 455 L 1370 520'/>
+<path class='rel' d='M 1620 455 L 1650 500'/>
+<path class='rel' d='M 2090 455 L 2000 500'/>
+<path class='rel' d='M 2150 720 L 2240 720'/>
+<path class='rel' d='M 2150 1240 L 2240 1240'/>
+<path class='rel' d='M 560 1700 L 650 1700'/>
+<path class='rel' d='M 1760 1400 L 950 1530'/>
+<text class='mult' x='585' y='600' text-anchor='middle'>0..1</text>
+<text class='mult' x='630' y='720' text-anchor='middle'>0..*</text>
+<text class='mult' x='585' y='1080' text-anchor='middle'>0..1</text>
+<text class='mult' x='630' y='1080' text-anchor='middle'>0..*</text>
+<text class='mult' x='1260' y='830' text-anchor='middle'>1</text>
+<text class='mult' x='1340' y='875' text-anchor='middle'>0..*</text>
+<text class='mult' x='1155' y='435' text-anchor='middle'>1</text>
+<text class='mult' x='1340' y='495' text-anchor='middle'>0..*</text>
+<text class='mult' x='1620' y='435' text-anchor='middle'>1</text>
+<text class='mult' x='1650' y='485' text-anchor='middle'>0..*</text>
+<text class='mult' x='2090' y='435' text-anchor='middle'>1</text>
+<text class='mult' x='2000' y='485' text-anchor='middle'>0..*</text>
+<text class='mult' x='2160' y='700' text-anchor='middle'>1</text>
+<text class='mult' x='2215' y='700' text-anchor='middle'>0..1</text>
+<text class='mult' x='2160' y='1220' text-anchor='middle'>0..*</text>
+<text class='mult' x='2215' y='1220' text-anchor='middle'>0..1</text>
+<text class='mult' x='570' y='1680' text-anchor='middle'>1</text>
+<text class='mult' x='630' y='1680' text-anchor='middle'>0..*</text>
+<text class='mult' x='950' y='1510' text-anchor='middle'>1</text>
+<text class='mult' x='1750' y='1380' text-anchor='middle'>0..*</text>
+<g><rect class='box' x='650' y='140' width='500' height='320'/><circle cx='677' cy='175' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='677' y='181' text-anchor='middle'>C</text><text class='cname' x='706' y='183'>Media</text><line class='rule' x1='650' y1='210' x2='1150' y2='210'/>
+<text class='attr' x='672' y='239'>id : unsigned BIGINT</text>
+<text class='attr' x='672' y='264'>media_type : VARCHAR(255)</text>
+<line class='rule' x1='650' y1='284' x2='1150' y2='284'/>
+<text class='op' x='672' y='314'>+ lihat() [MediaController::index]</text>
+<text class='op' x='672' y='337'>+ tambah() [MediaController::create/store]</text>
+<text class='op' x='672' y='360'>+ edit() [MediaController::edit/update]</text>
+<text class='op' x='672' y='383'>+ hapus() [MediaController::destroy]</text>
+<text class='op' x='672' y='406'>+ transactions() [Eloquent]</text>
+</g>
+<g><rect class='box' x='1370' y='140' width='500' height='320'/><circle cx='1397' cy='175' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='1397' y='181' text-anchor='middle'>C</text><text class='cname' x='1426' y='183'>Service</text><line class='rule' x1='1370' y1='210' x2='1870' y2='210'/>
+<text class='attr' x='1392' y='239'>id : unsigned BIGINT</text>
+<text class='attr' x='1392' y='264'>service_type : VARCHAR(255)</text>
+<line class='rule' x1='1370' y1='284' x2='1870' y2='284'/>
+<text class='op' x='1392' y='314'>+ lihat() [ServiceController::index]</text>
+<text class='op' x='1392' y='337'>+ tambah() [ServiceController::create/store]</text>
+<text class='op' x='1392' y='360'>+ edit() [ServiceController::edit/update]</text>
+<text class='op' x='1392' y='383'>+ hapus() [ServiceController::destroy]</text>
+<text class='op' x='1392' y='406'>+ transactions() [Eloquent]</text>
+</g>
+<g><rect class='box' x='2090' y='140' width='500' height='320'/><circle cx='2117' cy='175' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='2117' y='181' text-anchor='middle'>C</text><text class='cname' x='2146' y='183'>Purpose</text><line class='rule' x1='2090' y1='210' x2='2590' y2='210'/>
+<text class='attr' x='2112' y='239'>id : unsigned BIGINT</text>
+<text class='attr' x='2112' y='264'>purpose_type : VARCHAR(255)</text>
+<line class='rule' x1='2090' y1='284' x2='2590' y2='284'/>
+<text class='op' x='2112' y='314'>+ lihat() [PurposeController::index]</text>
+<text class='op' x='2112' y='337'>+ tambah() [PurposeController::create/store]</text>
+<text class='op' x='2112' y='360'>+ edit() [PurposeController::edit/update]</text>
+<text class='op' x='2112' y='383'>+ hapus() [PurposeController::destroy]</text>
+<text class='op' x='2112' y='406'>+ transactions() [Eloquent]</text>
+</g>
+<g><rect class='box' x='60' y='550' width='500' height='320'/><circle cx='87' cy='585' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='87' y='591' text-anchor='middle'>C</text><text class='cname' x='116' y='593'>Work</text><line class='rule' x1='60' y1='620' x2='560' y2='620'/>
+<text class='attr' x='82' y='649'>id : unsigned BIGINT</text>
+<text class='attr' x='82' y='674'>work_type : VARCHAR(255)</text>
+<line class='rule' x1='60' y1='694' x2='560' y2='694'/>
+<text class='op' x='82' y='724'>+ lihat() [WorkController::index]</text>
+<text class='op' x='82' y='747'>+ tambah() [WorkController::create/store]</text>
+<text class='op' x='82' y='770'>+ edit() [WorkController::edit/update]</text>
+<text class='op' x='82' y='793'>+ hapus() [WorkController::destroy]</text>
+<text class='op' x='82' y='816'>+ customers() [Eloquent]</text>
+</g>
+<g><rect class='box' x='60' y='960' width='500' height='320'/><circle cx='87' cy='995' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='87' y='1001' text-anchor='middle'>C</text><text class='cname' x='116' y='1003'>Education</text><line class='rule' x1='60' y1='1030' x2='560' y2='1030'/>
+<text class='attr' x='82' y='1059'>id : unsigned BIGINT</text>
+<text class='attr' x='82' y='1084'>education_type : VARCHAR(255)</text>
+<line class='rule' x1='60' y1='1104' x2='560' y2='1104'/>
+<text class='op' x='82' y='1134'>+ lihat() [EducationController::index]</text>
+<text class='op' x='82' y='1157'>+ tambah() [EducationController::create/store]</text>
+<text class='op' x='82' y='1180'>+ edit() [EducationController::edit/update]</text>
+<text class='op' x='82' y='1203'>+ hapus() [EducationController::destroy]</text>
+<text class='op' x='82' y='1226'>+ customers() [Eloquent]</text>
+</g>
+<g><rect class='box' x='650' y='550' width='600' height='590'/><circle cx='677' cy='585' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='677' y='591' text-anchor='middle'>C</text><text class='cname' x='706' y='593'>Customer</text><line class='rule' x1='650' y1='620' x2='1250' y2='620'/>
+<text class='attr' x='672' y='649'>id : unsigned BIGINT</text>
+<text class='attr' x='672' y='674'>nama_lengkap : VARCHAR(255)</text>
+<text class='attr' x='672' y='699'>no_hp : VARCHAR(255)</text>
+<text class='attr' x='672' y='724'>jenis_kelamin : VARCHAR(255)</text>
+<text class='attr' x='672' y='749'>email : VARCHAR(255) [nullable]</text>
+<text class='attr' x='672' y='774'>alamat : TEXT</text>
+<text class='attr' x='672' y='799'>usia : INTEGER</text>
+<text class='attr' x='672' y='824'>nama_instansi : VARCHAR(255) [nullable]</text>
+<text class='attr' x='672' y='849'>nip_nim : VARCHAR(255) [nullable]</text>
+<text class='attr' x='672' y='874'>work_id : unsigned BIGINT [nullable, FK]</text>
+<text class='attr' x='672' y='899'>education_id : unsigned BIGINT [nullable, FK]</text>
+<line class='rule' x1='650' y1='919' x2='1250' y2='919'/>
+<text class='op' x='672' y='949'>+ lihat() [CustomerController::index/show]</text>
+<text class='op' x='672' y='972'>+ daftarPemohon() [FormTamuController::create/store]</text>
+<text class='op' x='672' y='995'>+ eksporExcel() [CustomerController::exportExcel]</text>
+<text class='op' x='672' y='1018'>+ eksporPDF() [CustomerController::exportPDF]</text>
+<text class='op' x='672' y='1041'>+ work() [Eloquent]</text>
+<text class='op' x='672' y='1064'>+ education() [Eloquent]</text>
+<text class='op' x='672' y='1087'>+ transactions() [Eloquent]</text>
+</g>
+<g><rect class='box' x='1370' y='500' width='780' height='900'/><circle cx='1397' cy='535' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='1397' y='541' text-anchor='middle'>C</text><text class='cname' x='1426' y='543'>Transaction</text><line class='rule' x1='1370' y1='570' x2='2150' y2='570'/>
+<text class='attr' x='1392' y='599'>id : unsigned BIGINT</text>
+<text class='attr' x='1392' y='624'>customer_id : unsigned BIGINT [FK]</text>
+<text class='attr' x='1392' y='649'>media_id : unsigned BIGINT [FK]</text>
+<text class='attr' x='1392' y='674'>sub_categorie_id : unsigned BIGINT [FK]</text>
+<text class='attr' x='1392' y='699'>service_id : unsigned BIGINT [FK]</text>
+<text class='attr' x='1392' y='724'>purpose_id : unsigned BIGINT [FK]</text>
+<text class='attr' x='1392' y='749'>data_diminta : TEXT</text>
+<text class='attr' x='1392' y='774'>feedback_token_hash : VARCHAR(64) [nullable, unique]</text>
+<text class='attr' x='1392' y='799'>tracking_code_hash : VARCHAR(64) [nullable, unique]</text>
+<text class='attr' x='1392' y='824'>status_transaksi : VARCHAR(255)</text>
+<text class='attr' x='1392' y='849'>status_updated_at : TIMESTAMP [nullable]</text>
+<text class='attr' x='1392' y='874'>status_version : INTEGER UNSIGNED</text>
+<text class='attr' x='1392' y='899'>status_penilaian : VARCHAR(255)</text>
+<text class='attr' x='1392' y='924'>bukti_pelayanan : VARCHAR(255) [nullable]</text>
+<text class='attr' x='1392' y='949'>keterangan_pelayanan : TEXT [nullable]</text>
+<text class='attr' x='1392' y='974'>dilayani_pada : TIMESTAMP [nullable]</text>
+<text class='attr' x='1392' y='999'>dilayani_oleh : unsigned BIGINT [nullable, FK]</text>
+<line class='rule' x1='1370' y1='1019' x2='2150' y2='1019'/>
+<text class='op' x='1392' y='1049'>+ ajukan() [FormTamuController::store]</text>
+<text class='op' x='1392' y='1072'>+ lihat() [TransactionController::index/show]</text>
+<text class='op' x='1392' y='1095'>+ cekStatus() [ServiceStatusController::index/lookup]</text>
+<text class='op' x='1392' y='1118'>+ ubahStatus() [TransactionController::updateStatus]</text>
+<text class='op' x='1392' y='1141'>+ unduhBukti() [TransactionController::downloadProof]</text>
+<text class='op' x='1392' y='1164'>+ eksporExcel() [TransactionController::exportExcel]</text>
+<text class='op' x='1392' y='1187'>+ eksporPDF() [TransactionController::exportPDF]</text>
+<text class='op' x='1392' y='1210'>+ customer() [Eloquent]</text>
+<text class='op' x='1392' y='1233'>+ media() [Eloquent]</text>
+<text class='op' x='1392' y='1256'>+ service() [Eloquent]</text>
+<text class='op' x='1392' y='1279'>+ purpose() [Eloquent]</text>
+<text class='op' x='1392' y='1302'>+ subCategorie() [Eloquent]</text>
+<text class='op' x='1392' y='1325'>+ feedback() [Eloquent]</text>
+<text class='op' x='1392' y='1348'>+ dilayaniOleh() [Eloquent]</text>
+</g>
+<g><rect class='box' x='2240' y='560' width='630' height='420'/><circle cx='2267' cy='595' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='2267' y='601' text-anchor='middle'>C</text><text class='cname' x='2296' y='603'>Feedback</text><line class='rule' x1='2240' y1='630' x2='2870' y2='630'/>
+<text class='attr' x='2262' y='659'>id : unsigned BIGINT</text>
+<text class='attr' x='2262' y='684'>transaction_id : unsigned BIGINT [not null, unique]</text>
+<text class='attr' x='2262' y='709'>rating_pelayanan : INTEGER</text>
+<text class='attr' x='2262' y='734'>rating_fasilitas : INTEGER</text>
+<text class='attr' x='2262' y='759'>rating_kualitas : INTEGER</text>
+<text class='attr' x='2262' y='784'>saran_kritik : TEXT [nullable]</text>
+<line class='rule' x1='2240' y1='804' x2='2870' y2='804'/>
+<text class='op' x='2262' y='834'>+ bukaHalaman() [FeedbackLinkController::index]</text>
+<text class='op' x='2262' y='857'>+ resolveToken() [FeedbackLinkController::resolve]</text>
+<text class='op' x='2262' y='880'>+ isiForm() [FeedbackLinkController::create]</text>
+<text class='op' x='2262' y='903'>+ kirimFeedback() [FeedbackLinkController::store]</text>
+<text class='op' x='2262' y='926'>+ transaction() [Eloquent]</text>
+</g>
+<g><rect class='box' x='2240' y='1050' width='630' height='470'/><circle cx='2267' cy='1085' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='2267' y='1091' text-anchor='middle'>C</text><text class='cname' x='2296' y='1093'>User</text><line class='rule' x1='2240' y1='1120' x2='2870' y2='1120'/>
+<text class='attr' x='2262' y='1149'>id : unsigned BIGINT</text>
+<text class='attr' x='2262' y='1174'>name : VARCHAR(255)</text>
+<text class='attr' x='2262' y='1199'>email : VARCHAR(255) [unique]</text>
+<text class='attr' x='2262' y='1224'>email_verified_at : TIMESTAMP [nullable]</text>
+<text class='attr' x='2262' y='1249'>password : VARCHAR(255)</text>
+<text class='attr' x='2262' y='1274'>role : ENUM(admin, superadmin)</text>
+<text class='attr' x='2262' y='1299'>remember_token : VARCHAR(100) [nullable]</text>
+<line class='rule' x1='2240' y1='1319' x2='2870' y2='1319'/>
+<text class='op' x='2262' y='1349'>+ login() [AuthenticatedSessionController::create/store]</text>
+<text class='op' x='2262' y='1372'>+ logout() [AuthenticatedSessionController::destroy]</text>
+<text class='op' x='2262' y='1395'>+ lihatAkun() [AdminController::index]</text>
+<text class='op' x='2262' y='1418'>+ tambahAkun() [AdminController::create/store]</text>
+<text class='op' x='2262' y='1441'>+ editAkun() [AdminController::edit/update]</text>
+<text class='op' x='2262' y='1464'>+ hapusAkun() [AdminController::destroy]</text>
+</g>
+<g><rect class='box' x='60' y='1550' width='500' height='320'/><circle cx='87' cy='1585' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='87' y='1591' text-anchor='middle'>C</text><text class='cname' x='116' y='1593'>Categorie</text><line class='rule' x1='60' y1='1620' x2='560' y2='1620'/>
+<text class='attr' x='82' y='1649'>id : unsigned BIGINT</text>
+<text class='attr' x='82' y='1674'>categorie_type : VARCHAR(255)</text>
+<line class='rule' x1='60' y1='1694' x2='560' y2='1694'/>
+<text class='op' x='82' y='1724'>+ lihat() [CategorieController::index]</text>
+<text class='op' x='82' y='1747'>+ tambah() [CategorieController::create/store]</text>
+<text class='op' x='82' y='1770'>+ edit() [CategorieController::edit/update]</text>
+<text class='op' x='82' y='1793'>+ hapus() [CategorieController::destroy]</text>
+<text class='op' x='82' y='1816'>+ subCategories() [Eloquent]</text>
+</g>
+<g><rect class='box' x='650' y='1530' width='600' height='360'/><circle cx='677' cy='1565' r='15' fill='white' stroke='#111' stroke-width='1.5'/><text class='symbol' x='677' y='1571' text-anchor='middle'>C</text><text class='cname' x='706' y='1573'>SubCategorie</text><line class='rule' x1='650' y1='1600' x2='1250' y2='1600'/>
+<text class='attr' x='672' y='1629'>id : unsigned BIGINT</text>
+<text class='attr' x='672' y='1654'>sub_categorie_type : VARCHAR(255)</text>
+<text class='attr' x='672' y='1679'>categorie_id : unsigned BIGINT [FK]</text>
+<line class='rule' x1='650' y1='1699' x2='1250' y2='1699'/>
+<text class='op' x='672' y='1729'>+ lihat() [SubCategorieController::index]</text>
+<text class='op' x='672' y='1752'>+ tambah() [SubCategorieController::create/store]</text>
+<text class='op' x='672' y='1775'>+ edit() [SubCategorieController::edit/update]</text>
+<text class='op' x='672' y='1798'>+ hapus() [SubCategorieController::destroy]</text>
+<text class='op' x='672' y='1821'>+ categorie() [Eloquent]</text>
+<text class='op' x='672' y='1844'>+ transactions() [Eloquent]</text>
+</g>
+<line class="rule" x1="60" y1="1930" x2="2940" y2="1930"/><text class="note" x="60" y="1960">Label [Controller::action] adalah operasi sistem yang dipetakan ke controller/route; label [Eloquent] adalah method relasi yang benar-benar didefinisikan pada model.</text><text class="note" x="60" y="1988">FK id() dan foreignId() Laravel adalah unsigned BIGINT. VARCHAR tanpa panjang khusus adalah VARCHAR(255); [nullable] dan [unique] mengikuti migration.</text><text class="note" x="60" y="2016">created_at/updated_at adalah TIMESTAMP nullable dari timestamps() dan dihilangkan dari kotak. Token mentah tidak disimpan; kolom token adalah hash SHA-256 VARCHAR(64), nullable dan unique.</text><text class="note" x="60" y="2044">Feedback.transaction_id wajib dan unique. User.role adalah ENUM admin/superadmin; status transaksi adalah VARCHAR dengan nilai Belum dilayani, Sedang dilayani, Sudah dilayani.</text><text class="note" x="60" y="2072">Route master data berada dalam grup auth. Route akun memakai auth + SuperAdminMiddleware; route unduh bukti menambah AdminMiddleware. Route feedback/status publik memakai throttle sesuai definisi aktif.</text></svg>
+

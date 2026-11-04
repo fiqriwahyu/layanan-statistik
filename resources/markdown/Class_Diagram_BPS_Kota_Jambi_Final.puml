@@ -1,0 +1,195 @@
+@startuml
+title Class Diagram Sistem Informasi Layanan Statistik BPS Kota Jambi
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classFontName Arial
+skinparam classFontColor black
+skinparam classBackgroundColor white
+skinparam classHeaderBackgroundColor #2196D2
+skinparam classHeaderFontColor white
+skinparam classBorderColor #333333
+skinparam ArrowColor #333333
+skinparam linetype ortho
+
+' Operasi dalam diagram merupakan operasi sistem yang diverifikasi pada controller dan route.
+' Operasi tersebut bukan method model Eloquent. Diagram sengaja berfokus pada atribut domain.
+
+class Work {
+  ==
+  id
+  work_type
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class Education {
+  ==
+  id
+  education_type
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class Customer {
+  ==
+  id
+  nama_lengkap
+  no_hp
+  jenis_kelamin
+  email
+  alamat
+  usia
+  nama_instansi
+  nip_nim
+  work_id
+  education_id
+  ==
+  +lihat()
+  +daftarPemohon()
+  +eksporExcel()
+  +eksporPDF()
+}
+
+class Media {
+  ==
+  id
+  media_type
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class Service {
+  ==
+  id
+  service_type
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class Purpose {
+  ==
+  id
+  purpose_type
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class Categorie {
+  ==
+  id
+  categorie_type
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class SubCategorie {
+  ==
+  id
+  sub_categorie_type
+  categorie_id
+  ==
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+}
+
+class Transaction {
+  ==
+  id
+  customer_id
+  media_id
+  sub_categorie_id
+  service_id
+  purpose_id
+  data_diminta
+  feedback_token_hash
+  tracking_code_hash
+  status_transaksi
+  status_updated_at
+  status_version
+  status_penilaian
+  bukti_pelayanan
+  keterangan_pelayanan
+  dilayani_pada
+  dilayani_oleh
+  ==
+  +ajukan()
+  +lihat()
+  +cekStatus()
+  +ubahStatus()
+  +unduhBukti()
+  +eksporExcel()
+  +eksporPDF()
+}
+
+class Feedback {
+  ==
+  id
+  transaction_id
+  rating_pelayanan
+  rating_fasilitas
+  rating_kualitas
+  saran_kritik
+  ==
+  +bukaHalaman()
+  +resolveToken()
+  +isiForm()
+  +kirimFeedback()
+}
+
+class User {
+  ==
+  id
+  name
+  email
+  email_verified_at
+  password
+  role
+  remember_token
+  ==
+  +login()
+  +logout()
+  +lihatAkun()
+  +tambahAkun()
+  +editAkun()
+  +hapusAkun()
+}
+
+Work "0..1" -- "0..*" Customer
+Education "0..1" -- "0..*" Customer
+Customer "1" -- "0..*" Transaction
+Media "1" -- "0..*" Transaction
+Service "1" -- "0..*" Transaction
+Purpose "1" -- "0..*" Transaction
+Categorie "1" -- "0..*" SubCategorie
+SubCategorie "1" -- "0..*" Transaction
+Transaction "1" -- "0..1" Feedback
+User "0..1" -- "0..*" Transaction
+
+legend bottom
+  Operasi dalam kompartemen bawah adalah operasi sistem konseptual yang dipetakan ke
+  controller dan route aktif; operasi tersebut bukan method model Eloquent.
+  Kolom token pada Transaction berisi hash; token mentah tidak disimpan dalam tabel.
+endlegend
+@enduml

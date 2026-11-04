@@ -126,7 +126,15 @@
 
 <body>
 
-<div x-data="{ step: 1 }" class="min-vh-100 d-flex align-items-center justify-content-center p-3">
+@php
+    $stepThreeFields = ['media_id', 'sub_categorie_id', 'service_id', 'purpose_id', 'data_diminta'];
+    $stepTwoFields = ['work_id', 'education_id'];
+    $initialStep = collect($stepThreeFields)->contains(fn ($field) => $errors->has($field))
+        ? 3
+        : (collect($stepTwoFields)->contains(fn ($field) => $errors->has($field)) ? 2 : 1);
+@endphp
+
+<div x-data="guestRequestForm({{ $initialStep }})" class="min-vh-100 d-flex align-items-center justify-content-center p-3">
 
     <div class="form-card">
 
@@ -161,24 +169,30 @@
             <form action="{{ route('form-tamu.store') }}" method="POST">
                 @csrf
 
+                @if ($errors->any())
+                    <div class="alert alert-danger" role="alert">
+                        <p>Periksa kembali isian formulir:</p>
+                        <ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                    </div>
+                @endif
+
                 {{-- =====================================================
                      STEP 1 - DATA DIRI
                 ====================================================== --}}
-                <div x-show="step === 1">
+                <div data-form-step="1" x-show="step === 1">
 
                     <div class="step-title mb-3">Data Diri</div>
 
                     {{-- NAMA --}}
                     <div class="mb-3">
                         <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input id="nama_lengkap" name="nama_lengkap" type="text" value="{{ old('nama_lengkap') }}" placeholder="Masukkan nama lengkap" class="form-control rounded-2" required>
+                        <input id="nama_lengkap" name="nama_lengkap" type="text" value="{{ old('nama_lengkap') }}" maxlength="255" placeholder="Masukkan nama lengkap" class="form-control rounded-2" required>
                     </div>
 
                     {{-- NO HP --}}
                     <div class="mb-3">
                         <label for="no_hp" class="form-label">Nomor HP</label>
-                        <input id="no_hp" name="no_hp" type="text" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx" class="form-control rounded-2" required>
-                        <div id="cek-nohp-message" class="info-text mt-1 text-secondary"></div>
+                        <input id="no_hp" name="no_hp" type="tel" value="{{ old('no_hp') }}" maxlength="25" placeholder="Contoh: +62 812 3456 7890" class="form-control rounded-2" required>
                     </div>
 
                     {{-- JENIS KELAMIN --}}
@@ -194,22 +208,22 @@
                     {{-- EMAIL --}}
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="nama@email.com" class="form-control rounded-2">
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" maxlength="255" placeholder="nama@email.com" class="form-control rounded-2">
                     </div>
 
                     {{-- ALAMAT --}}
                     <div class="mb-3">
                         <label for="alamat" class="form-label">Alamat</label>
-                        <textarea id="alamat" name="alamat" rows="2" placeholder="Masukkan alamat" class="form-control rounded-2">{{ old('alamat') }}</textarea>
+                        <textarea id="alamat" name="alamat" rows="2" maxlength="1000" placeholder="Masukkan alamat" class="form-control rounded-2" required>{{ old('alamat') }}</textarea>
                     </div>
 
                     {{-- USIA --}}
                     <div class="mb-4">
                         <label for="usia" class="form-label">Usia</label>
-                        <input id="usia" name="usia" type="number" value="{{ old('usia') }}" placeholder="Masukkan usia" min="1" class="form-control rounded-2">
+                        <input id="usia" name="usia" type="number" value="{{ old('usia') }}" placeholder="Masukkan usia" min="1" max="150" class="form-control rounded-2" required>
                     </div>
 
-                    <button type="button" @click="step = 2" class="btn btn-primary rounded-pill w-100">
+                    <button type="button" @click="validateStep(1) && (step = 2)" class="btn btn-primary rounded-pill w-100">
                         Lanjut
                     </button>
 
@@ -219,20 +233,20 @@
                 {{-- =====================================================
                      STEP 2 - PEKERJAAN
                 ====================================================== --}}
-                <div x-show="step === 2" x-cloak>
+                <div data-form-step="2" x-show="step === 2" x-cloak>
 
                     <div class="step-title mb-3">Pekerjaan</div>
 
                     {{-- INSTANSI --}}
                     <div class="mb-3">
                         <label for="nama_instansi" class="form-label">Nama Instansi</label>
-                        <input id="nama_instansi" name="nama_instansi" type="text" value="{{ old('nama_instansi') }}" placeholder="Masukkan nama instansi" class="form-control rounded-2">
+                        <input id="nama_instansi" name="nama_instansi" type="text" value="{{ old('nama_instansi') }}" maxlength="255" placeholder="Masukkan nama instansi" class="form-control rounded-2">
                     </div>
 
                     {{-- NIP / NIM --}}
                     <div class="mb-3">
                         <label for="nip_nim" class="form-label">NIP / NIM</label>
-                        <input id="nip_nim" name="nip_nim" type="text" value="{{ old('nip_nim') }}" placeholder="Masukkan NIP / NIM" class="form-control rounded-2">
+                        <input id="nip_nim" name="nip_nim" type="text" value="{{ old('nip_nim') }}" maxlength="100" placeholder="Masukkan NIP / NIM" class="form-control rounded-2">
                     </div>
 
                     {{-- PEKERJAAN --}}
@@ -270,7 +284,7 @@
                             Kembali
                         </button>
 
-                        <button type="button" @click="step = 3" class="btn rounded-pill w-50 text-white" style="background:#385683;">
+                        <button type="button" @click="validateStep(2) && (step = 3)" class="btn rounded-pill w-50 text-white" style="background:#385683;">
                             Lanjut
                         </button>
                     </div>
@@ -281,7 +295,7 @@
                 {{-- =====================================================
                      STEP 3 - LAYANAN
                 ====================================================== --}}
-                <div x-show="step === 3" x-cloak>
+                <div data-form-step="3" x-show="step === 3" x-cloak>
 
                     <div class="step-title mb-3">Layanan</div>
 
@@ -328,7 +342,7 @@
 
                                     @forelse ($categorie->subCategories as $sub)
 
-                                        <div class="custom-dropdown-item" @click="selected = '{{ $sub->id }}'; text = '{{ $sub->sub_categorie_type }}'; open = false">
+                                        <div class="custom-dropdown-item" @click="selected = '{{ $sub->id }}'; text = @js($sub->sub_categorie_type); open = false">
                                             {{ $sub->sub_categorie_type }}
                                         </div>
 
@@ -393,7 +407,7 @@
                     <div class="mb-4">
                         <label for="data_diminta" class="form-label">Data yang Diminta</label>
 
-                        <textarea id="data_diminta" name="data_diminta" rows="3" placeholder="Tuliskan data yang dibutuhkan" class="form-control rounded-2">{{ old('data_diminta') }}</textarea>
+                        <textarea id="data_diminta" name="data_diminta" rows="3" maxlength="2000" placeholder="Tuliskan data yang dibutuhkan" class="form-control rounded-2" required>{{ old('data_diminta') }}</textarea>
                     </div>
 
 
@@ -427,87 +441,23 @@
 </div>
 
 
-{{-- =========================================================
-     AUTO FILL BERDASARKAN NOMOR HP
-========================================================= --}}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const noHp = document.getElementById('no_hp');
-    const message = document.getElementById('cek-nohp-message');
-
-    if (!noHp) return;
-
-    noHp.addEventListener('blur', function () {
-
-        const value = this.value.trim();
-
-        if (!value) {
-            message.textContent = '';
-            return;
-        }
-
-        message.textContent = 'Memeriksa data...';
-        message.className = 'info-text mt-1 text-secondary';
-
-        fetch(`/cek-nohp?no_hp=${encodeURIComponent(value)}`)
-            .then(response => response.json())
-            .then(data => {
-
-                if (!data || !data.found) {
-                    message.textContent = '';
-                    return;
+    function guestRequestForm(initialStep) {
+        return {
+            step: initialStep,
+            validateStep(stepNumber) {
+                const section = document.querySelector(`[data-form-step="${stepNumber}"]`);
+                const requiredFields = section.querySelectorAll('input[required], select[required], textarea[required]');
+                for (const field of requiredFields) {
+                    if (!field.reportValidity()) return false;
                 }
-
-                if (data.nama_lengkap) {
-                    document.getElementById('nama_lengkap').value = data.nama_lengkap;
-                }
-
-                if (data.alamat) {
-                    document.getElementById('alamat').value = data.alamat;
-                }
-
-                if (data.usia) {
-                    document.getElementById('usia').value = data.usia;
-                }
-
-                if (data.email) {
-                    document.getElementById('email').value = data.email;
-                }
-
-                if (data.nama_instansi) {
-                    document.getElementById('nama_instansi').value = data.nama_instansi;
-                }
-
-                if (data.nip_nim) {
-                    document.getElementById('nip_nim').value = data.nip_nim;
-                }
-
-                if (data.jenis_kelamin) {
-                    document.getElementById('jenis_kelamin').value = data.jenis_kelamin;
-                }
-
-                if (data.work_id) {
-                    document.getElementById('work_id').value = data.work_id;
-                }
-
-                if (data.education_id) {
-                    document.getElementById('education_id').value = data.education_id;
-                }
-
-                message.textContent = 'Data otomatis diisi berdasarkan nomor HP. Anda bisa mengubahnya.';
-                message.className = 'info-text mt-1 text-success';
-
-            })
-            .catch(error => {
-                console.error(error);
-                message.textContent = '';
-            });
-
-    });
-
-});
+                return true;
+            },
+        };
+    }
 </script>
+
+<x-flash-modal />
 
 </body>
 </html>

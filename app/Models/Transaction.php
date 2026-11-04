@@ -18,7 +18,11 @@ class Transaction extends Model
         'service_id',
         'purpose_id',
         'data_diminta',
+        'feedback_token_hash',
+        'tracking_code_hash',
         'status_transaksi',
+        'status_updated_at',
+        'status_version',
         'status_penilaian',
         'bukti_pelayanan',
         'keterangan_pelayanan',
@@ -28,7 +32,10 @@ class Transaction extends Model
 
     protected $casts = [
         'dilayani_pada' => 'datetime',
+        'status_updated_at' => 'datetime',
     ];
+
+    protected $hidden = ['feedback_token_hash', 'tracking_code_hash'];
 
     public function customer()
     {

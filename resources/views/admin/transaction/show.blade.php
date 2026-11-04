@@ -41,10 +41,11 @@
         <div>
             <strong>Status Transaksi:</strong>
             <span
-                class="px-2 py-1 rounded text-white
-                {{ $transaction->status_transaksi === 'Sudah dilayani' ? 'bg-green-500' : 'bg-red-500' }}">
+                class="px-2 py-1 rounded border
+                {{ $transaction->status_transaksi === 'Sudah dilayani' ? 'border-green-300 bg-green-100 text-green-800' : ($transaction->status_transaksi === 'Sedang dilayani' ? 'border-amber-300 bg-amber-100 text-amber-900' : 'border-gray-300 bg-gray-100 text-gray-800') }}">
                 {{ $transaction->status_transaksi }}
             </span>
+            <p class="mt-2 text-sm text-gray-600">Terakhir diperbarui: {{ $transaction->status_updated_at?->format('d-m-Y H:i') ?? '-' }}</p>
         </div>
 
         <hr>

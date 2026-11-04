@@ -19,11 +19,21 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
+            @if ($canDeleteAccount)
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <div class="max-w-xl">
+                        @include('profile.partials.delete-user-form')
+                    </div>
                 </div>
-            </div>
+            @elseif ($user->role === 'admin')
+                <div class="rounded border border-blue-200 bg-blue-50 p-4 text-blue-900" role="status">
+                    Akun admin hanya dapat dihapus oleh superadmin melalui halaman pengelolaan admin.
+                </div>
+            @else
+                <div class="rounded border border-blue-200 bg-blue-50 p-4 text-blue-900" role="status">
+                    Akun superadmin terakhir tidak dapat dihapus.
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

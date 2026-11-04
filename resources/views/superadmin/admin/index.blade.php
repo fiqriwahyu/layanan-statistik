@@ -12,18 +12,6 @@
 
             <div class="px-3 sm:px-5 lg:px-7 py-4 sm:py-5">
 
-                @if (session('success'))
-                    <div class="mb-4 px-3 sm:px-4 py-2 bg-green-100 border border-green-300 text-green-700 text-[14px] rounded-sm break-words">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-4 px-3 sm:px-4 py-2 bg-red-100 border border-red-300 text-red-700 text-[14px] rounded-sm break-words">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
 
                     <a href="{{ route('superadmin.admin.create') }}"

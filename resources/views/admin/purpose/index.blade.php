@@ -26,19 +26,6 @@
             {{-- Body --}}
             <div class="px-3 sm:px-5 lg:px-7 py-4 sm:py-5">
 
-                {{-- Success Alert --}}
-                @if (session('success'))
-                    <div class="mb-4
-                                px-4 py-3
-                                bg-green-100
-                                border border-green-300
-                                text-green-700
-                                text-[14px]
-                                rounded-sm">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 {{-- Toolbar --}}
                 <div class="flex flex-col lg:flex-row
                             lg:items-center

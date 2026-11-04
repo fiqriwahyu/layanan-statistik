@@ -31,9 +31,14 @@ return new class extends Migration
 
             $table->text('data_diminta');
 
+            $table->string('feedback_token_hash', 64)->nullable()->unique();
+            $table->string('tracking_code_hash', 64)->nullable()->unique();
+
             // Status transaksi
             $table->string('status_transaksi')
                 ->default('Belum dilayani');
+            $table->timestamp('status_updated_at')->nullable();
+            $table->unsignedInteger('status_version')->default(0);
 
             // Data penyelesaian pelayanan
             $table->string('bukti_pelayanan')

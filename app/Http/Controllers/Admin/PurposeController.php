@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Purpose;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class PurposeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $purposes = Purpose::orderBy('created_at', 'desc')->paginate(15);
+        $request->validate(['search' => ['nullable', 'string', 'max:255']]);
+        $purposes = Purpose::when($request->filled('search'), fn ($query) => $query->where('purpose_type', 'like', '%' . $request->search . '%'))->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         return view('admin.purpose.index', compact('purposes'));
     }
@@ -53,7 +55,7 @@ class PurposeController extends Controller
     public function destroy($id)
     {
         $purpose = Purpose::findOrFail($id);
-        $purpose->delete();
+        try { $purpose->delete(); } catch (QueryException) { return back()->with('error', 'Tujuan masih digunakan dan tidak dapat dihapus.'); }
 
         return redirect()->route('admin.purpose.index')->with('success', 'Tujuan berhasil dihapus.');
     }

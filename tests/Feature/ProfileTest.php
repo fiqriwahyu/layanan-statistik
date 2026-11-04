@@ -21,6 +21,26 @@ class ProfileTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_profile_delete_action_matches_role_and_superadmin_count_rules(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)->get('/profile')
+            ->assertOk()
+            ->assertDontSee('Delete Account')
+            ->assertSee('Akun admin hanya dapat dihapus oleh superadmin');
+
+        $superadmin = User::factory()->create(['role' => 'superadmin']);
+        $this->actingAs($superadmin)->get('/profile')
+            ->assertOk()
+            ->assertDontSee('Delete Account')
+            ->assertSee('Akun superadmin terakhir tidak dapat dihapus.');
+
+        User::factory()->create(['role' => 'superadmin']);
+        $this->actingAs($superadmin)->get('/profile')
+            ->assertOk()
+            ->assertSee('Delete Account');
+    }
+
     public function test_profile_information_can_be_updated(): void
     {
         $user = User::factory()->create();
@@ -61,7 +81,7 @@ class ProfileTest extends TestCase
         $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
-    public function test_user_can_delete_their_account(): void
+    public function test_admin_cannot_delete_their_account_from_profile(): void
     {
         $user = User::factory()->create();
 
@@ -71,12 +91,10 @@ class ProfileTest extends TestCase
                 'password' => 'password',
             ]);
 
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/');
+        $response->assertForbidden();
 
-        $this->assertGuest();
-        $this->assertNull($user->fresh());
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user->fresh());
     }
 
     public function test_correct_password_must_be_provided_to_delete_account(): void

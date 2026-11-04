@@ -3,10 +3,10 @@
     use Illuminate\Support\Facades\Route;
 
     use App\Http\Controllers\FormTamuController;
-    use App\Http\Controllers\FeedbackController;
+    use App\Http\Controllers\FeedbackLinkController;
+    use App\Http\Controllers\ServiceStatusController;
     use App\Http\Controllers\WelcomeController;
     use App\Http\Controllers\ProfileController;
-
     use App\Http\Controllers\Admin\DashboardController;
     use App\Http\Controllers\Admin\EducationController;
     use App\Http\Controllers\Admin\WorkController;
@@ -19,6 +19,7 @@
     use App\Http\Controllers\Admin\TransactionController;
     use App\Http\Controllers\Admin\AdminController;
 
+    use App\Http\Middleware\AdminMiddleware;
     use App\Http\Middleware\SuperAdminMiddleware;
 
     // Halaman utama
@@ -26,27 +27,35 @@
         ->name('welcome');
 
     // Form tamu
-    Route::get('/cek-nohp', [FormTamuController::class, 'cekNoHp'])
-        ->name('form-tamu.cek-nohp');
-
     Route::get('/form-tamu', [FormTamuController::class, 'create'])
         ->name('form-tamu');
 
     Route::post('/form-tamu', [FormTamuController::class, 'store'])
         ->name('form-tamu.store');
 
+    Route::get('/cek-status', [ServiceStatusController::class, 'index'])
+        ->name('service-status.index');
+
+    Route::post('/cek-status', [ServiceStatusController::class, 'lookup'])
+        ->middleware('throttle:10,1')
+        ->name('service-status.lookup');
+
     // Feedback
-    Route::get('/feedback', function () {
-        return view('feedback.index');
-    })->name('feedback.index');
+    Route::get('/feedback', [FeedbackLinkController::class, 'index'])
+        ->name('feedback.index');
 
-    Route::get('/feedback/cek-nohp', [FeedbackController::class, 'cekNoHp'])
-        ->name('feedback.cek-nohp');
+    Route::post('/feedback/continue', [FeedbackLinkController::class, 'resolve'])
+        ->middleware('throttle:10,1')
+        ->name('feedback.resolve');
 
-    Route::get('/feedback/{transaction}', [FeedbackController::class, 'create'])
+    Route::get('/feedback/{token}', [FeedbackLinkController::class, 'create'])
+        ->where('token', '[a-f0-9]{32}')
+        ->middleware('throttle:10,1')
         ->name('feedback.create');
 
-    Route::post('/feedback', [FeedbackController::class, 'store'])
+    Route::post('/feedback/{token}', [FeedbackLinkController::class, 'store'])
+        ->where('token', '[a-f0-9]{32}')
+        ->middleware('throttle:10,1')
         ->name('feedback.store');
 
     // Profile
@@ -233,6 +242,10 @@
 
             Route::put('/transaction/{transaksi}/status', [TransactionController::class, 'updateStatus'])
                 ->name('transaction.updateStatus');
+
+            Route::get('/transaction/{transaksi}/proof', [TransactionController::class, 'downloadProof'])
+                ->middleware(AdminMiddleware::class)
+                ->name('transaction.proof');
             
             Route::get('/transaction/export/pdf', [TransactionController::class, 'exportPDF'])
                 ->name('transaction.export.pdf');

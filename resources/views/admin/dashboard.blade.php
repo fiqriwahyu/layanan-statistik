@@ -6,26 +6,26 @@
         </div>
     </x-slot>
 
-    <div class="w-full bg-[#f3f3f3] px-4 sm:px-5 py-3">
+    <div class="w-full bg-slate-50 px-4 py-5 sm:px-6 lg:px-8">
 
         {{-- TOOLBAR --}}
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+        <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 
             {{-- FILTER --}}
             <div class="w-full lg:w-auto">
                 <button type="button"
                     onclick="toggleFilter()"
-                    class="w-full sm:w-auto bg-blue-400 hover:bg-blue-500 text-white text-[14px] px-4 py-2 rounded-sm transition">
+                    class="inline-flex min-h-10 w-full items-center justify-center rounded-md bg-[#31579c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#284a86] focus:outline-none focus:ring-2 focus:ring-[#31579c] focus:ring-offset-2 sm:w-auto">
                     <span class="mr-1">▼</span>
                     Filter Tanggal
                 </button>
             </div>
 
             {{-- DOWNLOAD --}}
-            <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+            <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
 
                 <a href="{{ route('admin.dashboard.export.pdf', request()->only(['from', 'to'])) }}"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white text-[14px] px-4 py-2 rounded-sm transition">
+                    class="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-md bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:w-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -35,7 +35,7 @@
                 </a>
 
                 <a href="{{ route('admin.dashboard.export.excel', array_merge(request()->only(['from', 'to']), ['format' => 'xlsx'])) }}"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-[14px] px-4 py-2 rounded-sm transition">
+                    class="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-md bg-[#31579c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#284a86] focus:outline-none focus:ring-2 focus:ring-[#31579c] focus:ring-offset-2 sm:w-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -45,7 +45,7 @@
                 </a>
 
                 <a href="{{ route('admin.dashboard.export.excel', array_merge(request()->only(['from', 'to']), ['format' => 'csv'])) }}"
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-[14px] px-4 py-2 rounded-sm transition">
+                    class="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 sm:w-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -61,13 +61,13 @@
         <form id="filterTanggal"
             method="GET"
             action="{{ route('admin.dashboard') }}"
-            class="hidden bg-white border border-gray-300 rounded-sm p-3 sm:p-4 mb-4">
+            class="mb-5 hidden rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
 
             <div class="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4">
 
                 <div class="w-full sm:w-auto">
                     <label for="from"
-                        class="block text-[14px] text-gray-600 mb-1">
+                        class="mb-1.5 block text-sm font-medium text-slate-700">
                         Dari
                     </label>
 
@@ -75,12 +75,12 @@
                         id="from"
                         name="from"
                         value="{{ request('from') }}"
-                        class="w-full sm:w-[170px] h-[36px] border border-gray-400 px-3 py-1 text-[14px] rounded-sm focus:outline-none focus:border-blue-500">
+                        class="h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 sm:w-[180px]">
                 </div>
 
                 <div class="w-full sm:w-auto">
                     <label for="to"
-                        class="block text-[14px] text-gray-600 mb-1">
+                        class="mb-1.5 block text-sm font-medium text-slate-700">
                         Sampai
                     </label>
 
@@ -88,18 +88,18 @@
                         id="to"
                         name="to"
                         value="{{ request('to') }}"
-                        class="w-full sm:w-[170px] h-[36px] border border-gray-400 px-3 py-1 text-[14px] rounded-sm focus:outline-none focus:border-blue-500">
+                        class="h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 sm:w-[180px]">
                 </div>
 
                 <div class="flex gap-2 w-full sm:w-auto">
 
                     <button type="submit"
-                        class="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white text-[14px] px-4 py-2 rounded-sm">
+                        class="min-h-10 flex-1 rounded-md bg-[#31579c] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#284a86] focus:outline-none focus:ring-2 focus:ring-[#31579c] focus:ring-offset-2 sm:flex-none">
                         Filter
                     </button>
 
                     <a href="{{ route('admin.dashboard') }}"
-                        class="flex-1 sm:flex-none text-center bg-gray-300 hover:bg-gray-400 text-gray-700 text-[14px] px-4 py-2 rounded-sm">
+                        class="min-h-10 flex-1 rounded-md bg-slate-100 px-4 py-2 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 sm:flex-none">
                         Reset
                     </a>
 
@@ -109,59 +109,64 @@
         </form>
 
         {{-- STATISTIK --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <div class="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-            <div class="h-[68px] bg-white border border-gray-400 border-l-[4px] border-l-blue-600 rounded-sm px-4 py-2">
-                <p class="text-[14px] text-blue-600">Total Pengunjung</p>
-                <p class="mt-1 text-[15px] text-gray-800">
-                    <strong>{{ $totalCustomer }}</strong> orang
+            <div class="min-h-[92px] rounded-lg border border-slate-200 border-l-4 border-l-[#31579c] bg-white px-4 py-3 shadow-sm sm:px-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-[#31579c]">Total Pengunjung</p>
+                <p class="mt-2 text-2xl font-bold leading-none text-slate-800">
+                    {{ $totalCustomer }} <span class="text-sm font-medium text-slate-500">orang</span>
                 </p>
             </div>
 
-            <div class="h-[68px] bg-white border border-gray-400 border-l-[4px] border-l-blue-600 rounded-sm px-4 py-2">
-                <p class="text-[14px] text-blue-600">Belum Dilayani</p>
-                <p class="mt-1 text-[15px] text-gray-800">
-                    <strong>{{ $belumDilayani }}</strong> transaksi
+            <div class="min-h-[92px] rounded-lg border border-slate-200 border-l-4 border-l-sky-500 bg-white px-4 py-3 shadow-sm sm:px-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-sky-700">Belum Dilayani</p>
+                <p class="mt-2 text-2xl font-bold leading-none text-slate-800">
+                    {{ $belumDilayani }} <span class="text-sm font-medium text-slate-500">transaksi</span>
                 </p>
             </div>
 
-            <div class="h-[68px] bg-white border border-gray-400 border-l-[4px] border-l-blue-600 rounded-sm px-4 py-2">
-                <p class="text-[14px] text-blue-600">Sudah Dilayani</p>
-                <p class="mt-1 text-[15px] text-gray-800">
-                    <strong>{{ $sudahDilayani }}</strong> transaksi
+            <div class="min-h-[92px] rounded-lg border border-slate-200 border-l-4 border-l-amber-500 bg-white px-4 py-3 shadow-sm sm:px-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Sedang Dilayani</p>
+                <p class="mt-2 text-2xl font-bold leading-none text-slate-800">{{ $sedangDilayani }} <span class="text-sm font-medium text-slate-500">transaksi</span></p>
+            </div>
+
+            <div class="min-h-[92px] rounded-lg border border-slate-200 border-l-4 border-l-emerald-600 bg-white px-4 py-3 shadow-sm sm:px-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">Sudah Dilayani</p>
+                <p class="mt-2 text-2xl font-bold leading-none text-slate-800">
+                    {{ $sudahDilayani }} <span class="text-sm font-medium text-slate-500">transaksi</span>
                 </p>
             </div>
 
         </div>
 
         {{-- GRAFIK UTAMA --}}
-        <div class="grid grid-cols-1 lg:grid-cols-[2.12fr_1fr] gap-4">
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-[2.12fr_1fr]">
 
             <div class="min-w-0 space-y-4">
 
                 {{-- PENDIDIKAN --}}
-                <div class="bg-white border border-gray-300 rounded-sm shadow-sm overflow-hidden">
+                <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 
-                    <div class="h-[56px] flex flex-col items-center justify-center bg-[#e1e7f0] border-b border-gray-300">
-                        <span class="text-[13px] text-[#31579c]">Data Pengunjung :</span>
-                        <span class="text-[13px] text-[#31579c]">Berdasarkan Pendidikan</span>
+                    <div class="flex min-h-[68px] flex-col items-center justify-center border-b border-slate-200 bg-[#e1e7f0] px-3 py-3 text-center">
+                        <span class="text-xs font-medium text-[#31579c]">Data Pengunjung</span>
+                        <span class="mt-0.5 text-sm font-semibold text-slate-800">Berdasarkan Pendidikan</span>
                     </div>
 
-                    <div class="h-[180px] px-2 py-2">
+                    <div class="h-[230px] px-3 py-3 sm:h-[250px]">
                         <canvas id="educationChart"></canvas>
                     </div>
 
                 </div>
 
                 {{-- PEKERJAAN --}}
-                <div class="bg-white border border-gray-300 rounded-sm shadow-sm overflow-hidden">
+                <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 
-                    <div class="h-[56px] flex flex-col items-center justify-center bg-[#e1e7f0] border-b border-gray-300">
-                        <span class="text-[13px] text-[#31579c]">Data Pengunjung :</span>
-                        <span class="text-[13px] text-[#31579c]">Berdasarkan Pekerjaan</span>
+                    <div class="flex min-h-[68px] flex-col items-center justify-center border-b border-slate-200 bg-[#e1e7f0] px-3 py-3 text-center">
+                        <span class="text-xs font-medium text-[#31579c]">Data Pengunjung</span>
+                        <span class="mt-0.5 text-sm font-semibold text-slate-800">Berdasarkan Pekerjaan</span>
                     </div>
 
-                    <div class="h-[180px] px-2 py-2">
+                    <div class="h-[230px] px-3 py-3 sm:h-[250px]">
                         <canvas id="workChart"></canvas>
                     </div>
 
@@ -172,14 +177,14 @@
             {{-- MEDIA PELAYANAN --}}
             <div class="min-w-0">
 
-                <div class="h-full bg-white border border-gray-300 rounded-sm shadow-sm overflow-hidden">
+                <div class="h-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 
-                    <div class="h-[56px] flex flex-col items-center justify-center bg-[#e1e7f0] border-b border-gray-300">
-                        <span class="text-[13px] text-[#31579c]">Data Transaksi :</span>
-                        <span class="text-[13px] text-[#31579c]">Berdasarkan Media Pelayanan</span>
+                    <div class="flex min-h-[68px] flex-col items-center justify-center border-b border-slate-200 bg-[#e1e7f0] px-3 py-3 text-center">
+                        <span class="text-xs font-medium text-[#31579c]">Data Transaksi</span>
+                        <span class="mt-0.5 text-sm font-semibold text-slate-800">Berdasarkan Media Pelayanan</span>
                     </div>
 
-                    <div class="h-[380px] px-2 py-2">
+                    <div class="h-[485px] px-3 py-3 sm:h-[520px]">
                         <canvas id="mediaChart"></canvas>
                     </div>
 
@@ -190,31 +195,31 @@
         </div>
 
         {{-- GRAFIK BAWAH --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+        <div class="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
 
             {{-- JENIS PELAYANAN --}}
-            <div class="bg-white border border-gray-300 rounded-sm shadow-sm overflow-hidden">
+            <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 
-                <div class="h-[56px] flex flex-col items-center justify-center bg-[#e1e7f0] border-b border-gray-300">
-                    <span class="text-[13px] text-[#31579c]">Data Transaksi :</span>
-                    <span class="text-[13px] text-[#31579c]">Berdasarkan Jenis Pelayanan</span>
+                <div class="flex min-h-[68px] flex-col items-center justify-center border-b border-slate-200 bg-[#e1e7f0] px-3 py-3 text-center">
+                    <span class="text-xs font-medium text-[#31579c]">Data Transaksi</span>
+                    <span class="mt-0.5 text-sm font-semibold text-slate-800">Berdasarkan Jenis Pelayanan</span>
                 </div>
 
-                <div class="h-[250px] px-3 py-2">
+                <div class="h-[285px] px-3 py-3 sm:h-[310px]">
                     <canvas id="serviceChart"></canvas>
                 </div>
 
             </div>
 
             {{-- TUJUAN --}}
-            <div class="bg-white border border-gray-300 rounded-sm shadow-sm overflow-hidden">
+            <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
 
-                <div class="h-[56px] flex flex-col items-center justify-center bg-[#e1e7f0] border-b border-gray-300">
-                    <span class="text-[13px] text-[#31579c]">Data Transaksi :</span>
-                    <span class="text-[13px] text-[#31579c]">Berdasarkan Tujuan</span>
+                <div class="flex min-h-[68px] flex-col items-center justify-center border-b border-slate-200 bg-[#e1e7f0] px-3 py-3 text-center">
+                    <span class="text-xs font-medium text-[#31579c]">Data Transaksi</span>
+                    <span class="mt-0.5 text-sm font-semibold text-slate-800">Berdasarkan Tujuan</span>
                 </div>
 
-                <div class="h-[250px] px-3 py-2">
+                <div class="h-[285px] px-3 py-3 sm:h-[310px]">
                     <canvas id="purposeChart"></canvas>
                 </div>
 
@@ -258,7 +263,7 @@
                 if (!total) return;
 
                 ctx.save();
-                ctx.font = '10px Arial';
+                ctx.font = '11px Arial';
                 ctx.textBaseline = 'middle';
 
                 meta.data.forEach((arc, index) => {
@@ -317,7 +322,7 @@
                     ticks: {
                         color: '#444',
                         font: {
-                            size: 9
+                            size: 10
                         },
                         maxRotation: 0,
                         minRotation: 0
@@ -328,7 +333,7 @@
                     ticks: {
                         color: '#444',
                         font: {
-                            size: 9
+                            size: 10
                         },
                         precision: 0
                     },
@@ -394,7 +399,7 @@
                         ticks: {
                             color: '#444',
                             font: {
-                                size: 9
+                                size: 10
                             },
                             maxRotation: 45,
                             minRotation: 45
@@ -405,7 +410,7 @@
                         ticks: {
                             color: '#444',
                             font: {
-                                size: 9
+                                size: 10
                             },
                             precision: 0
                         },

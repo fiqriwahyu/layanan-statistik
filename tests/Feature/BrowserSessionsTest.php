@@ -4,21 +4,18 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Jetstream\Http\Livewire\LogoutOtherBrowserSessionsForm;
-use Livewire\Livewire;
 use Tests\TestCase;
 
 class BrowserSessionsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_other_browser_sessions_can_be_logged_out(): void
+    public function test_logout_invalidates_the_authenticated_session(): void
     {
-        $this->actingAs(User::factory()->create());
+        $user = User::factory()->create();
 
-        Livewire::test(LogoutOtherBrowserSessionsForm::class)
-            ->set('password', 'password')
-            ->call('logoutOtherBrowserSessions')
-            ->assertSuccessful();
+        $this->actingAs($user)->post('/logout')->assertRedirect(route('login'));
+
+        $this->assertGuest();
     }
 }

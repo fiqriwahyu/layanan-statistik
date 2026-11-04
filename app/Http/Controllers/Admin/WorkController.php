@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Work;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class WorkController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $works = Work::orderBy('created_at', 'desc')->paginate(15);
+        $request->validate(['search' => ['nullable', 'string', 'max:255']]);
+        $works = Work::when($request->filled('search'), fn ($query) => $query->where('work_type', 'like', '%' . $request->search . '%'))->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         return view('admin.work.index', compact('works'));
     }
@@ -53,7 +55,7 @@ class WorkController extends Controller
 
     public function destroy(Work $work)
     {
-        $work->delete();
+        try { $work->delete(); } catch (QueryException) { return back()->with('error', 'Pekerjaan masih digunakan dan tidak dapat dihapus.'); }
 
         return redirect()
             ->route('admin.work.index')

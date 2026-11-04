@@ -12,12 +12,14 @@ class TransactionExport implements FromCollection, WithHeadings
     protected $search;
     protected $from;
     protected $to;
+    protected $status;
 
-    public function __construct($search = null, $from = null, $to = null)
+    public function __construct($search = null, $from = null, $to = null, $status = null)
     {
         $this->search = $search;
         $this->from = $from;
         $this->to = $to;
+        $this->status = $status;
     }
 
     public function headings(): array
@@ -70,6 +72,10 @@ class TransactionExport implements FromCollection, WithHeadings
 
         if ($this->to) {
             $query->whereDate('created_at', '<=', $this->to);
+        }
+
+        if ($this->status) {
+            $query->where('status_transaksi', $this->status);
         }
 
         return $query->get()->values()->map(function ($transaction, $index) {

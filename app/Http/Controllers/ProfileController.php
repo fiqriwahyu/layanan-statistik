@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\User;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -16,8 +17,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'canDeleteAccount' => $user->role === 'superadmin'
+                && User::where('role', 'superadmin')->count() > 1,
         ]);
     }
 
@@ -47,6 +52,10 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->role === 'admin' || ($user->role === 'superadmin' && User::where('role', 'superadmin')->count() <= 1)) {
+            abort(403, 'Akun tidak dapat dihapus melalui halaman profil.');
+        }
 
         Auth::logout();
 

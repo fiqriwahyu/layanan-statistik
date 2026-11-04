@@ -1,0 +1,255 @@
+@startuml
+title UML Class Diagram Sistem Informasi Layanan Statistik BPS Kota Jambi
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classFontName Arial
+skinparam classFontColor black
+skinparam classBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam linetype ortho
+
+class Work {
+  --
+  id : unsigned BIGINT
+  work_type : VARCHAR(255)
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +customers()
+}
+
+class Education {
+  --
+  id : unsigned BIGINT
+  education_type : VARCHAR(255)
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +customers()
+}
+
+class Customer {
+  --
+  id : unsigned BIGINT
+  nama_lengkap : VARCHAR(255)
+  no_hp : VARCHAR(255)
+  jenis_kelamin : VARCHAR(255)
+  email : VARCHAR(255) [nullable]
+  alamat : TEXT
+  usia : INTEGER
+  nama_instansi : VARCHAR(255) [nullable]
+  nip_nim : VARCHAR(255) [nullable]
+  work_id : unsigned BIGINT [nullable, FK]
+  education_id : unsigned BIGINT [nullable, FK]
+  --
+  +lihat()
+  +daftarPemohon()
+  +eksporExcel()
+  +eksporPDF()
+  +work()
+  +education()
+  +transactions()
+}
+
+class Media {
+  --
+  id : unsigned BIGINT
+  media_type : VARCHAR(255)
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +transactions()
+}
+
+class Service {
+  --
+  id : unsigned BIGINT
+  service_type : VARCHAR(255)
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +transactions()
+}
+
+class Purpose {
+  --
+  id : unsigned BIGINT
+  purpose_type : VARCHAR(255)
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +transactions()
+}
+
+class Transaction {
+  --
+  id : unsigned BIGINT
+  customer_id : unsigned BIGINT [FK]
+  media_id : unsigned BIGINT [FK]
+  sub_categorie_id : unsigned BIGINT [FK]
+  service_id : unsigned BIGINT [FK]
+  purpose_id : unsigned BIGINT [FK]
+  data_diminta : TEXT
+  feedback_token_hash : VARCHAR(64) [nullable, unique]
+  tracking_code_hash : VARCHAR(64) [nullable, unique]
+  status_transaksi : VARCHAR(255)
+  status_updated_at : TIMESTAMP [nullable]
+  status_version : INTEGER UNSIGNED
+  status_penilaian : VARCHAR(255)
+  bukti_pelayanan : VARCHAR(255) [nullable]
+  keterangan_pelayanan : TEXT [nullable]
+  dilayani_pada : TIMESTAMP [nullable]
+  dilayani_oleh : unsigned BIGINT [nullable, FK]
+  --
+  +ajukan()
+  +lihat()
+  +cekStatus()
+  +ubahStatus()
+  +unduhBukti()
+  +eksporExcel()
+  +eksporPDF()
+  +customer()
+  +media()
+  +service()
+  +purpose()
+  +subCategorie()
+  +feedback()
+  +dilayaniOleh()
+}
+
+class Feedback {
+  --
+  id : unsigned BIGINT
+  transaction_id : unsigned BIGINT [not null, unique]
+  rating_pelayanan : INTEGER
+  rating_fasilitas : INTEGER
+  rating_kualitas : INTEGER
+  saran_kritik : TEXT [nullable]
+  --
+  +bukaHalaman()
+  +resolveToken()
+  +isiForm()
+  +kirimFeedback()
+  +transaction()
+}
+
+class User {
+  --
+  id : unsigned BIGINT
+  name : VARCHAR(255)
+  email : VARCHAR(255) [unique]
+  email_verified_at : TIMESTAMP [nullable]
+  password : VARCHAR(255)
+  role : ENUM('admin', 'superadmin')
+  remember_token : VARCHAR(100) [nullable]
+  --
+  +login()
+  +logout()
+  +lihatAkun()
+  +tambahAkun()
+  +editAkun()
+  +hapusAkun()
+}
+
+class Categorie {
+  --
+  id : unsigned BIGINT
+  categorie_type : VARCHAR(255)
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +subCategories()
+}
+
+class SubCategorie {
+  --
+  id : unsigned BIGINT
+  sub_categorie_type : VARCHAR(255)
+  categorie_id : unsigned BIGINT [FK]
+  --
+  +lihat()
+  +tambah()
+  +edit()
+  +hapus()
+  +categorie()
+  +transactions()
+}
+
+Work "0..1" -- "0..*" Customer : work / customers
+Education "0..1" -- "0..*" Customer : education / customers
+Customer "1" -- "0..*" Transaction : customer / transactions
+Media "1" -- "0..*" Transaction : media / transactions
+Service "1" -- "0..*" Transaction : service / transactions
+Purpose "1" -- "0..*" Transaction : purpose / transactions
+SubCategorie "1" -- "0..*" Transaction : subCategorie / transactions
+Categorie "1" -- "0..*" SubCategorie : categorie / subCategories
+Transaction "1" -- "0..1" Feedback : feedback / transaction
+User "0..1" -- "0..*" Transaction : dilayaniOleh / dilayani_oleh
+
+note bottom of User
+  Mewarisi Laravel Authenticatable. Model User tidak mendefinisikan method relasi khusus.
+  email memiliki constraint unik; role adalah ENUM database admin atau superadmin.
+  login/logout ditangani AuthenticatedSessionController. Pengelolaan akun ditangani AdminController
+  pada route superadmin dengan middleware autentikasi dan SuperAdminMiddleware.
+end note
+note bottom of Transaction
+  Token mentah 32 karakter heksadesimal tidak disimpan. Kolom token berisi hash SHA-256.
+  Kedua hash nullable dan unik. Token feedback dihapus setelah digunakan; tracking hash tetap dipakai untuk lookup.
+  Nilai default status_transaksi: Belum dilayani; status_penilaian: Belum menilai;
+  status_version: 0. Status layanan lain yang dipakai aplikasi: Sedang dilayani dan Sudah dilayani.
+  FK selain dilayani_oleh bersifat wajib. Kolom status memakai string, bukan ENUM.
+end note
+note bottom of Customer
+  created_at dan updated_at tersedia pada tabel tetapi dihilangkan dari diagram.
+  Tipe yang ditampilkan adalah tipe kolom migration, bukan deklarasi tipe PHP.
+  Operasi di kompartemen adalah operasi sistem dari controller; bukan method model.
+  lihat/eksporExcel/eksporPDF dari CustomerController; daftarPemohon dari FormTamuController::create/store.
+  id() dan foreignId() Laravel menghasilkan unsigned BIGINT; label bigint pada atribut mengikuti tipe dasar tersebut.
+end note
+note bottom of Work
+  CRUD dipetakan ke WorkController: index, create/store, edit/update, destroy.
+  customers() adalah method relasi yang didefinisikan pada model.
+end note
+note bottom of Education
+  CRUD dipetakan ke EducationController; customers() adalah method relasi model.
+end note
+note bottom of Media
+  CRUD dipetakan ke MediaController; transactions() adalah method relasi model.
+end note
+note bottom of Service
+  CRUD dipetakan ke ServiceController; transactions() adalah method relasi model.
+end note
+note bottom of Purpose
+  CRUD dipetakan ke PurposeController; transactions() adalah method relasi model.
+end note
+note bottom of Categorie
+  CRUD dipetakan ke CategorieController; subCategories() adalah method relasi model.
+end note
+note bottom of SubCategorie
+  CRUD dipetakan ke SubCategorieController; categorie() dan transactions() adalah method relasi model.
+end note
+note bottom of Transaction
+  ajukan() = FormTamuController::store; cekStatus() = ServiceStatusController::index/lookup.
+  lihat/ubahStatus/unduhBukti/eksporExcel/eksporPDF dipetakan ke TransactionController::index-show/updateStatus/downloadProof/exportExcel-exportPDF.
+  Method relasi terdefinisi pada model.
+end note
+note bottom of Feedback
+  buka/resolve/form/kirim feedback dipetakan ke FeedbackLinkController::index/resolve/create/store.
+  transaction() adalah method relasi model.
+end note
+@enduml

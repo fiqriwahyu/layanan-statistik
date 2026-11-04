@@ -76,6 +76,8 @@
 
     </div>
 
+    <x-flash-modal />
+
 </body>
 
 </html>

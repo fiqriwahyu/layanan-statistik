@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('feedback', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->constrained('transactions');
+            $table->foreignId('transaction_id')->unique()->constrained('transactions');
             $table->integer('rating_pelayanan');
             $table->integer('rating_fasilitas');
             $table->integer('rating_kualitas');

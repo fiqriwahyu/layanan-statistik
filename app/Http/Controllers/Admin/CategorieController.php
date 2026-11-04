@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class CategorieController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Categorie::withCount('subCategories')->orderBy('created_at', 'desc')->paginate(15);
+        $request->validate(['search' => ['nullable', 'string', 'max:255']]);
+        $categories = Categorie::withCount('subCategories')->when($request->filled('search'), fn ($query) => $query->where('categorie_type', 'like', '%' . $request->search . '%'))->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         return view('admin.categorie.index', compact('categories'));
     }
@@ -49,7 +51,7 @@ class CategorieController extends Controller
 
     public function destroy(Categorie $categorie)
     {
-        $categorie->delete();
+        try { $categorie->delete(); } catch (QueryException) { return back()->with('error', 'Kategori masih digunakan dan tidak dapat dihapus.'); }
 
         return redirect()->route('admin.categorie.index')->with('success', 'Kategori berhasil dihapus.');
     }

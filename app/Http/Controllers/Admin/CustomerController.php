@@ -13,6 +13,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
+        $this->validateReportFilters($request);
         $query = Customer::query();
 
         if ($request->filled('search')) {
@@ -47,6 +48,8 @@ class CustomerController extends Controller
     public function exportExcel(Request $request)
     {
         $format = strtolower($request->query('format', 'xlsx'));
+        $this->validateReportFilters($request);
+        abort_unless(in_array($format, ['csv', 'xlsx'], true), 422, 'Format ekspor tidak didukung.');
 
         $export = new CustomerExport(
             $request->query('search'),
@@ -71,6 +74,7 @@ class CustomerController extends Controller
 
     public function exportPDF(Request $request)
     {
+        $this->validateReportFilters($request);
         $query = Customer::with(['work', 'education'])
             ->orderBy('created_at', 'desc');
 
@@ -114,5 +118,14 @@ class CustomerController extends Controller
         return $pdf->download(
             'Laporan_Data_Pengunjung_' . now()->format('Ymd_His') . '.pdf'
         );
+    }
+
+    private function validateReportFilters(Request $request): void
+    {
+        $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'from' => ['nullable', 'date_format:Y-m-d'],
+            'to' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
+        ]);
     }
 }

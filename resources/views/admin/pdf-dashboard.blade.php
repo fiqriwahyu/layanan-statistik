@@ -244,6 +244,11 @@
             </td>
 
             <td>
+                <div class="summary-label">Sedang Dilayani</div>
+                <div class="summary-value">{{ $sedangDilayani }}</div>
+            </td>
+
+            <td>
                 <div class="summary-label">Sudah Dilayani</div>
                 <div class="summary-value">{{ $sudahDilayani }}</div>
             </td>
