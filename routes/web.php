@@ -74,7 +74,7 @@
     // Admin
     Route::prefix('admin')
         ->name('admin.')
-        ->middleware('auth')
+        ->middleware(['auth', 'admin.email.verified'])
         ->group(function () {
 
             // Dashboard
@@ -268,6 +268,10 @@
 
             Route::post('/admin', [AdminController::class, 'store'])
                 ->name('admin.store');
+
+            Route::post('/admin/{admin}/verification-notification', [AdminController::class, 'resendVerification'])
+                ->middleware('throttle:6,1')
+                ->name('admin.verification.send');
 
             Route::get('/admin/{admin}/edit', [AdminController::class, 'edit'])
                 ->name('admin.edit');

@@ -294,6 +294,8 @@
 
                             </label>
 
+                            <a href="{{ route('password.request') }}" class="text-sm font-medium text-[#3E5C8A] hover:underline">Lupa Password?</a>
+
 
                         </div>
 

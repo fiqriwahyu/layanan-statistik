@@ -41,6 +41,10 @@
                                     Email
                                 </th>
 
+                                <th class="border border-gray-400 px-3 sm:px-4 text-center font-normal whitespace-nowrap">
+                                    Status Verifikasi
+                                </th>
+
                                 <th class="border border-gray-400 px-3 sm:px-4 text-center font-normal w-[110px] whitespace-nowrap">
                                     Aksi
                                 </th>
@@ -65,6 +69,20 @@
 
                                     <td class="h-[70px] border border-gray-300 px-3 sm:px-4 text-center align-middle break-words">
                                         {{ $admin->email }}
+                                    </td>
+
+                                    <td class="border border-gray-300 px-3 sm:px-4 text-center align-middle">
+                                        @if ($admin->hasVerifiedEmail())
+                                            <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">Terverifikasi</span>
+                                        @else
+                                            <div class="flex flex-col items-center gap-2">
+                                                <span class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">Belum terverifikasi</span>
+                                                <form action="{{ route('superadmin.admin.verification.send', $admin) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="rounded-sm bg-[#3E5C8A] px-3 py-1 text-xs font-medium text-white hover:bg-[#30486e]">Kirim Ulang Email</button>
+                                                </form>
+                                            </div>
+                                        @endif
                                     </td>
 
                                     <td class="border border-gray-300 px-2 sm:px-3 align-middle">
@@ -100,7 +118,7 @@
 
                                 <tr>
 
-                                    <td colspan="4"
+                                    <td colspan="5"
                                         class="border border-gray-300 text-center py-8 px-3 text-gray-500 text-[16px]">
                                         Data admin tidak ditemukan
                                     </td>

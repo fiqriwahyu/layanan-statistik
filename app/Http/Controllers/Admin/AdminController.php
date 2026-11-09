@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class AdminController extends Controller
 {
@@ -38,16 +39,24 @@ class AdminController extends Controller
             'password.min' => 'Password minimal 8 karakter.',
         ]);
 
-        User::create([
+        $admin = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => 'admin',
         ]);
 
+        try {
+            $admin->sendEmailVerificationNotification();
+        } catch (TransportExceptionInterface) {
+            return redirect()
+                ->route('superadmin.admin.index')
+                ->with('error', 'Akun admin berhasil dibuat, tetapi email verifikasi gagal dikirim. Kirim ulang dari daftar admin.');
+        }
+
         return redirect()
             ->route('superadmin.admin.index')
-            ->with('success', 'Admin berhasil ditambahkan.');
+            ->with('success', 'Admin berhasil ditambahkan. Email verifikasi telah dikirim.');
     }
 
     public function edit(User $admin)
@@ -82,10 +91,15 @@ class AdminController extends Controller
             'password.min' => 'Password minimal 8 karakter.',
         ]);
 
-        $admin->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-        ]);
+        $emailChanged = $admin->email !== $data['email'];
+        $admin->name = $data['name'];
+        $admin->email = $data['email'];
+
+        if ($emailChanged) {
+            $admin->email_verified_at = null;
+        }
+
+        $admin->save();
 
         if (!empty($data['password'])) {
             $admin->update([
@@ -93,9 +107,46 @@ class AdminController extends Controller
             ]);
         }
 
+        if ($emailChanged) {
+            try {
+                $admin->sendEmailVerificationNotification();
+            } catch (TransportExceptionInterface) {
+                return redirect()
+                    ->route('superadmin.admin.index')
+                    ->with('error', 'Data admin berhasil diperbarui, tetapi email verifikasi gagal dikirim. Kirim ulang dari daftar admin.');
+            }
+        }
+
         return redirect()
             ->route('superadmin.admin.index')
-            ->with('success', 'Admin berhasil diperbarui.');
+            ->with('success', $emailChanged
+                ? 'Admin berhasil diperbarui. Email verifikasi baru telah dikirim.'
+                : 'Admin berhasil diperbarui.');
+    }
+
+    public function resendVerification(User $admin)
+    {
+        if ($admin->role !== 'admin') {
+            abort(404);
+        }
+
+        if ($admin->hasVerifiedEmail()) {
+            return redirect()
+                ->route('superadmin.admin.index')
+                ->with('error', 'Email admin tersebut sudah terverifikasi.');
+        }
+
+        try {
+            $admin->sendEmailVerificationNotification();
+        } catch (TransportExceptionInterface) {
+            return redirect()
+                ->route('superadmin.admin.index')
+                ->with('error', 'Email verifikasi gagal dikirim. Periksa konfigurasi email lalu coba lagi.');
+        }
+
+        return redirect()
+            ->route('superadmin.admin.index')
+            ->with('success', 'Email verifikasi telah dikirim ulang kepada admin.');
     }
 
     public function destroy(User $admin)

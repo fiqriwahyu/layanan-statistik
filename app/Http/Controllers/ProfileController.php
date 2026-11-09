@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Illuminate\View\View;
 
@@ -31,15 +32,35 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
+        $oldPhoto = $user->profile_photo_path;
+        $newPhoto = $request->file('profile_photo')?->store('profile-photos', 'public');
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill(collect($validated)->only(['name', 'email'])->all());
+
+        if ($newPhoto) {
+            $user->profile_photo_path = $newPhoto;
+        } elseif ($request->boolean('remove_profile_photo')) {
+            $user->profile_photo_path = null;
         }
 
-        $request->user()->save();
+        $emailChanged = $user->isDirty('email');
+        if ($emailChanged) {
+            $user->email_verified_at = null;
+        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->save();
+
+        if (($newPhoto || $request->boolean('remove_profile_photo')) && $oldPhoto) {
+            Storage::disk('public')->delete($oldPhoto);
+        }
+
+        if ($emailChanged) {
+            $user->sendEmailVerificationNotification();
+        }
+
+        return Redirect::route('profile.edit')->with('status', $emailChanged ? 'profile-updated-verification-sent' : 'profile-updated');
     }
 
     /**

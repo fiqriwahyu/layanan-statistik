@@ -1,17 +1,23 @@
 # Tautan feedback layanan
 
-Setiap pengajuan layanan publik menghasilkan token acak khusus transaksi. Aplikasi menyimpan SHA-256 token pada transaksi, lalu menampilkan tautan rahasia sekali pada halaman konfirmasi pengajuan. Pengunjung dapat menggunakan tautan setelah transaksi berstatus **Sudah dilayani**.
+## Penerbitan dan penyimpanan
 
-Token dibuat dengan `bin2hex(random_bytes(16))`, sehingga berisi tepat 32 karakter heksadesimal huruf kecil acak (128 bit entropi). Aplikasi hanya menerima format `^[a-f0-9]{32}$`. Database menyimpan hash SHA-256 sepanjang 64 karakter, bukan token aslinya.
+Saat pengajuan valid dibuat, FormTamuController menghasilkan token dengan bin2hex(random_bytes(16)): 32 karakter heksadesimal huruf kecil (128 bit entropi). Aplikasi menyimpan SHA-256 token (64 karakter) pada transactions.feedback_token_hash dan menyampaikan token mentah hanya melalui tautan konfirmasi. Model Transaction menyembunyikan kedua hash token dari serialisasi.
 
-Tautan lama dengan token 64 karakter tidak lagi dapat digunakan. Pengunjung perlu memakai token baru yang diterbitkan pada konfirmasi pengajuan; aplikasi tidak membuat ulang token secara otomatis untuk transaksi yang sudah ada.
+Token mentah tidak disimpan di database dan tidak dapat ditampilkan kembali jika hilang.
 
-Token membuktikan bahwa pengirim feedback menguasai tautan rahasia tersebut. Token tidak membuktikan identitas hukum, kepemilikan nomor HP, atau bahwa orang yang memegang tautan adalah pelanggan yang tercatat. Jangan mengirimkan atau membagikan tautan kepada pihak lain.
+## Syarat penggunaan
 
-Saat feedback berhasil disimpan, aplikasi menyimpan feedback dan menghapus hash token dalam transaksi database yang sama. Unique constraint pada `feedback.transaction_id` membatasi satu feedback per transaksi. Permintaan berulang ditolak.
+FeedbackLinkController tidak memeriksa status_transaksi. Token dapat dipakai ketika transaksi berstatus Belum dilayani, Sedang dilayani, atau Sudah dilayani, selama hash masih cocok dan feedback untuk transaksi itu belum ada.
+
+Saat feedback berhasil disimpan, satu transaksi database membuat Feedback, mengubah status_penilaian menjadi Sudah menilai, dan menghapus feedback_token_hash. feedback.transaction_id memiliki unique constraint. Karena itu, token hanya dapat berhasil digunakan satu kali; pengiriman ulang ditolak.
+
+## Kondisi token tidak valid
+
+Token/tautan ditolak jika token mentah bukan 32 karakter hex huruf kecil, hash tidak cocok dengan transaksi, hash sudah dihapus, atau feedback terkait sudah ada. Route juga membatasi token dengan pola 32 karakter hex. Saat pengguna memasukkan URL penuh, resolver hanya menerima URL HTTP/HTTPS ke host dan port situs saat ini dengan path tepat /feedback/{token}; URL yang menyertakan user/password, query, atau fragment ditolak. URL atau token yang tidak memenuhi batas ini tidak dapat membuka form feedback.
+
+Token hanya membuktikan penguasaan tautan rahasia, bukan identitas hukum, kepemilikan nomor HP, atau identitas pengisi. Jangan bagikan tautan kepada pihak lain.
 
 ## Masa berlaku
 
-Saat ini token tidak memiliki masa berlaku berbasis waktu. Token dapat digunakan ketika transaksi berstatus **Belum dilayani**, **Sedang dilayani**, atau **Sudah dilayani**, sampai feedback berhasil dikirim atau hash token dihapus karena tindakan lain. Kebijakan durasi belum ditetapkan; jangan menyampaikan kepada pengguna bahwa tautan akan kedaluwarsa.
-
-Sebelum menerapkan kedaluwarsa, pemilik proses perlu memilih durasi (misalnya 30 atau 90 hari) serta titik awalnya: waktu pengajuan atau waktu pelayanan selesai. Hitungan dari waktu pengajuan membatasi usia token, tetapi dapat membuat tautan kedaluwarsa sebelum layanan selesai; hitungan dari waktu selesai mempertahankan kesempatan memberi masukan sepanjang proses, tetapi token tetap aktif tanpa batas selama layanan belum selesai. Penerapan memerlukan timestamp yang konsisten, keputusan zona waktu, dan test batas waktu. Jangan menetapkan durasi permanen tanpa keputusan tersebut.
+Tidak ada masa berlaku berbasis waktu dalam kode saat ini. Token tetap bisa digunakan selama hash tersimpan dan feedback belum dibuat, apa pun status transaksi. Jangan menyatakan token kedaluwarsa setelah durasi tertentu.

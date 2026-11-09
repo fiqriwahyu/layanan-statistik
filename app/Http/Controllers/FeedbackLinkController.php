@@ -32,7 +32,7 @@ class FeedbackLinkController extends Controller
         $token = $this->extractToken($validator->validated()['feedback_link'], $request);
         if (!$token) {
             return redirect()->route('feedback.index')->withErrors([
-            'feedback_link' => 'Masukkan token baru berupa 32 karakter heksadesimal huruf kecil atau tautan feedback dari situs ini. Token lama 64 karakter tidak lagi dapat digunakan.',
+            'feedback_link' => 'Masukkan token baru berupa 32 karakter heksadesimal huruf kecil atau tautan feedback dari situs ini.',
             ])->withInput();
         }
 

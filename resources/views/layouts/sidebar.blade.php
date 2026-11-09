@@ -58,6 +58,11 @@
 
         <nav class="flex-1 px-3 py-4 overflow-y-auto">
 
+            <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition {{ request()->routeIs('profile.*') ? 'bg-white text-[#3E5C8A] shadow-sm' : 'text-white/90 hover:bg-white/10' }}">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM4 21a8 8 0 0116 0"/></svg>
+                <span>Profil</span>
+            </a>
+
             <a
                 href="{{ route('admin.dashboard') }}"
                 class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition

@@ -37,9 +37,7 @@ class PasswordResetLinkController extends Controller
             $request->only('email')
         );
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        // Keep the response identical for known, unknown, and throttled addresses.
+        return back()->with('status', 'Jika alamat tersebut terdaftar, tautan reset password akan dikirim ke email.');
     }
 }
